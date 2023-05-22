@@ -10,7 +10,7 @@ const basename = path.basename(__filename);
 const db = {};
 
 let sequelize;
-sequelize = new Sequelize('doantn', 'k4091lf2fcbgvf0jruz9', 'pscale_pw_k5QXppADqtWsdQs6HjnaVO2TzjwztzJCW8o8Cir06Ht', {
+sequelize = new Sequelize('doantn', 'fllpo6vgv0hd8atgcpa1', 'pscale_pw_oVVehtQEpq4sQRp1exq4cbm1TnEG3VB57jzHcBDbHOE', {
   host: 'aws.connect.psdb.cloud',
   dialect: 'mysql',
   logging: false,
