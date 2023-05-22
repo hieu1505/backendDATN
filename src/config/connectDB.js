@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 
 
 // Option 3: Passing parameters separately (other dialects)
-const sequelize = new Sequelize('doantn', 'sy9fsgcq616zgwgzp718', 'pscale_pw_ffKh58M3zKh4j9kWh49LEN9EhNpzGQbK7PIQ3zWXAE9', {
+const sequelize = new Sequelize('doantn', 'ragawbn8i3zv8n1gwbdd', 'pscale_pw_3YtGWWkow1LOtVX96PYbdLoKzczBQ7QsEgAgsFyRhKU', {
   host: 'aws.connect.psdb.cloud',
   dialect: 'mysql',
   logging: false,
