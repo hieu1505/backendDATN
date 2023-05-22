@@ -11,7 +11,7 @@ dotenv.config();
 const db = {};
 
 let sequelize;
-sequelize = new Sequelize('doantn','oblcnhu7gebet2qc08pe' ,'pscale_pw_XzTEgUssxB3AAHjIt1xZM4TyHxWsZ2ms7eLTwnqqsOV', {
+sequelize = new Sequelize('doantn','3bhqzjsfk2ffyh5wlm6u' ,process.env.PASS, {
   host: 'aws.connect.psdb.cloud',
   dialect: 'mysql',
   logging: false,
