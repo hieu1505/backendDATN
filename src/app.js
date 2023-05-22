@@ -1,11 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const connectDB = require('./config/connectDB');
 const app = express()
 const port = 3001
 
 app.use(function(req, res, next) {
   // res.header("Access-Control-Allow-Origin", "*");
-  const allowedOrigins = ['http://localhost:3000'];
+  const allowedOrigins = ['http://localhost:3000','https://trungtamquanlytremocoi.onrender.com'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
        res.setHeader('Access-Control-Allow-Origin', origin);
@@ -24,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 // route(app);
 app.use('/',route)
-
+connectDB()
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
