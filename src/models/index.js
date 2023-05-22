@@ -1,16 +1,17 @@
 'use strict';
-
+const dotenv = require('dotenv'); 
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
+dotenv.config();
 // const env =  'development';
 // const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
 let sequelize;
-sequelize = new Sequelize('doantn', 'fllpo6vgv0hd8atgcpa1', 'pscale_pw_oVVehtQEpq4sQRp1exq4cbm1TnEG3VB57jzHcBDbHOE', {
+sequelize = new Sequelize('doantn','oblcnhu7gebet2qc08pe' ,'pscale_pw_XzTEgUssxB3AAHjIt1xZM4TyHxWsZ2ms7eLTwnqqsOV', {
   host: 'aws.connect.psdb.cloud',
   dialect: 'mysql',
   logging: false,
