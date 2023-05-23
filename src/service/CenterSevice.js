@@ -33,7 +33,7 @@ let createCenter = async ( data) => {
                     const profile = await db.Profile.create({
                         name: data.name,
                         address: data.address,
-                        avatar: data.image,
+                        avatar: data.images,
                         gender: data.gender === '1' ? true : false,
                         phoneNumber: data.phoneNumber,
                         birthday: data.birthday

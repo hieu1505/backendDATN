@@ -9,15 +9,9 @@ let create=async(req,res)=>{
             message: 'nhập đầy đủ thông tin s'
         })
     }
-    if (!req.file) {
-        if (req.body.gender === '1') {
-            req.body.image = 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540808/profiles/male_default_avatar.jng_tgqrqf.jpg'
-        } else {
-            req.body.image = 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540809/profiles/female_defaule_avatar_ezuxcv.jpg'
-        }
-    } else {
+   
         req.body.image = req.file.path;
-    }
+    
     
     if (!moment(req.body.birthday, 'YYYY-MM-DD', true).isValid()) {
         return res.status(400).json({
@@ -32,9 +26,9 @@ let create=async(req,res)=>{
         })
     }
     if (req.body.gender === '1') {
-        req.body.image = 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540808/profiles/male_default_avatar.jng_tgqrqf.jpg'
+        req.body.images = 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540808/profiles/male_default_avatar.jng_tgqrqf.jpg'
     } else {
-        req.body.image = 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540809/profiles/female_defaule_avatar_ezuxcv.jpg'
+        req.body.images = 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540809/profiles/female_defaule_avatar_ezuxcv.jpg'
     }
     req.body.active = '1'
     let message = await CenterSevice.createCenter(req.body)

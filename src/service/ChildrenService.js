@@ -38,7 +38,7 @@ let getChildrenByid=(id) => {
         }
     })
 }
-let getAllChildren= async(id ,key,page,limit)=>{
+let getAllChildrenbycenter= async(id ,key,page,limit)=>{
     return new Promise(async (resolve, reject) => {
         try {
             page = page - 0;
@@ -126,10 +126,38 @@ let UpdateChildren=(params, data) => {
         }
     })
 }
+let getAllChildren=async(key,page,limit)=>{
+    return new Promise(async (resolve, reject) => {
+        try {
+            page = page - 0;
+            limit = limit - 0;
+            let offset = page * limit;
+            const { count, rows } = await db.Children.findAndCountAll({
+                offset: offset,
+                limit: limit,
+                raw: true,
+                nest: true,
+                
+
+            })
+            console.log(rows)
+            let resData = {};
+            resData.children = rows;
+            resData.limit = limit;
+            resData.totalPages = Math.ceil(count / limit);
+            resData.totalElements = count
+            resData.page = page;
+            resolve(resData);
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 module.exports = {
     deleteChildren:deleteChildren,
     getChildrenByid:getChildrenByid,
-    getAllChildren:getAllChildren,
+    getAllChildrenbycenter:getAllChildrenbycenter,
     createChildren:createChildren,
-    UpdateChildren:UpdateChildren
+    UpdateChildren:UpdateChildren,
+    getAllChildren:getAllChildren
 }

@@ -38,7 +38,7 @@ let getChildrenById = async (req, res) => {
     }
 
 }
-let getallChildren =async (req,res)=>{
+let getallChildrenbycenter =async (req,res)=>{
     let id = parseInt(req.params.id);
     if(id){
         let key;
@@ -49,7 +49,7 @@ let getallChildren =async (req,res)=>{
     }
     let pageNumber = req.query.page === undefined ? 0: req.query.page;
     let limit = req.query.limit === undefined ? 10 : req.query.limit;
-    let resData=await ChildrenService.getAllChildren(id,key,pageNumber,limit)
+    let resData=await ChildrenService.getAllChildrenbycenter(id,key,pageNumber,limit)
     let page ={};
     page.size= resData.size;
     page.totalPages= resData.totalPages;
@@ -120,10 +120,34 @@ let UpdateChildren=async (req,res)=>{
     }
     let resData=await ChildrenService.UpdateChildren(req.params,req.params)
 }
+let getallChildren=async (req,res)=>{
+    if( req.query.key === undefined){
+        key = ''
+    } else{
+        key= req.query.key
+    }
+    let pageNumber = req.query.page === undefined ? 0: req.query.page;
+    let limit = req.query.limit === undefined ? 10 : req.query.limit;
+    let resData=await ChildrenService.getAllChildren(key,pageNumber,limit)
+    let page ={};
+    page.size= resData.size;
+    page.totalPages= resData.totalPages;
+    page.totalElements = resData.totalElements;
+    page.page = resData.page;
+    return res.status(200).json({
+        erroCode:0,
+        message: 'OK',
+        page: page,
+        children: resData.children,
+    })
+    }
+   
+
 module.exports = {
     DeleteChildren: DeleteChildren,
     getChildrenById: getChildrenById,
-    getallChildren:getallChildren,
+    getallChildrenbycenter:getallChildrenbycenter,
     create:create,
-    UpdateChildren:UpdateChildren
+    UpdateChildren:UpdateChildren,
+    getallChildren:getallChildren
 }
