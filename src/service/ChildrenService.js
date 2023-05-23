@@ -137,6 +137,13 @@ let getAllChildren=async(key,page,limit)=>{
                 limit: limit,
                 raw: true,
                 nest: true,
+                include: [
+                    {
+                        model: db.Center,
+                        required: true,
+                        as: 'center',
+                    },
+                ]
                 
 
             })
