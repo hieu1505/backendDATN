@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Center, { foreignKey: 'center_id', as: 'center' });
-      this.hasMany(models.Comment, { foreignKey: 'activity_id', as: 'comment' })
+      this.hasMany(models.Comment, { foreignKey: 'activity_id', as: 'comment' });
+      this.hasMany(models.Like, { foreignKey: 'activity_id', as: 'like' });
+      
     }
   }
   Activity.init({

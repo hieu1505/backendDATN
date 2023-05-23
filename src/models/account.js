@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Role, { foreignKey: 'role_id', as: 'role' });
       this.belongsTo(models.Profile, { foreignKey: 'profile_id', as: 'profile' });
       this.hasOne(models.Center,{foreignKey:'account_id',as:'center'})
+      this.hasMany(models.Like, { foreignKey: 'acount_id', as: 'like' });
     }
   }
   Account.init({
