@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 // route(app);
 app.use('/',route)
-connectDB()
+// connectDB()
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
