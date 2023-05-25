@@ -29,7 +29,14 @@ let getChildrenByid=(id) => {
         try {
             console.log(id)
             let chidren= await db.Children.findOne({
-                where:{id:id}
+                where:{id:id},
+                include: [
+                    {
+                        model: db.Center,
+                        required: true,
+                        as: 'center',
+                    },
+                ]
             })
             resolve(chidren);
             
