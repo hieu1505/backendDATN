@@ -9,6 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      img: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      } ,
       title: {
         type: Sequelize.TEXT('long'),
         allowNull: false,

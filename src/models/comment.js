@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsTo(models.Profile, { foreignKey: 'profile_id', as: 'profile' });
+      this.belongsTo(models.Account, { foreignKey: 'account_id', as: 'account' });
       this.belongsTo(models.Activity, { foreignKey: 'activity_id', as: 'activity' });
     }
   }
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    profile_id:{
+    account_id:{
       type: DataTypes.INTEGER,
       allowNull: false,
     },

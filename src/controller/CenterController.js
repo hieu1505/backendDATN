@@ -9,8 +9,9 @@ let create=async(req,res)=>{
             message: 'nhập đầy đủ thông tin s'
         })
     }
-   
+    if (req.file) {
         req.body.image = req.file.path;
+    } 
     
     
     if (!moment(req.body.birthday, 'YYYY-MM-DD', true).isValid()) {

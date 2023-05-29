@@ -18,9 +18,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Activity.init({
+
     title: {
       type: DataTypes.TEXT('long'),
       allowNull: false,
+    } ,
+    img: {
+      type: DataTypes.STRING,
+      allowNull: true,
     } ,
     content: {
       type: DataTypes.TEXT('long'),

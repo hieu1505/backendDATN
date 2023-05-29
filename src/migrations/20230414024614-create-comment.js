@@ -13,11 +13,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      profile_id:{
+      account_id:{
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      
+      activity_id:{
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

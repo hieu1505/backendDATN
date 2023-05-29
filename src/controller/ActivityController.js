@@ -100,6 +100,7 @@ let createActivity=async (req, res) => {
             message: 'nhập đầy đủ thông tin'
         })
     }
+    req.body.image = req.file.path
     let message = await ActivityService.createActivity(id,req.body)
     if (message.errCode == 0) {
         return res.status(200).json(message.errCode);
@@ -109,6 +110,10 @@ let createActivity=async (req, res) => {
 }
 let updateActivity=async (req, res) => {
     let id =req.params.id;
+    if (req.file) {
+        req.body.image = req.file.path;
+    } 
+
     if (!id){
         return res.status(400).json({message: 'Thiếu tham số id'});
     }
@@ -130,7 +135,7 @@ module.exports = {
     getallactivity:getallactivity,
     deleteactivity:deleteactivity,
     getactivitybyid:getactivitybyid,
-    createActivity:createActivity,
+    createActivity:createActivity, 
     updateActivity:updateActivity,
     getactivitybycenter:getactivitybycenter
 }
