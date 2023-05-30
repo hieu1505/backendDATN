@@ -109,11 +109,12 @@ let UpdateCenter=async (req,res)=>{
 let getCenterById=async(req,res)=>{
     let id = parseInt(req.params.id);
     if (id) {
-        let center = await CenterSevice.getCenterById(id);
-        if(center){
+        let resData = await CenterSevice.getCenterById(id);
+        if(resData.center){
             return res.status(200).json({
                 errCode: 0,
-                message: center,
+                message:resData.center,
+                countchildent:resData.countchildent
             })
         }
         else {

@@ -2,7 +2,7 @@ const commentService=require('../service/commentService')
 
 let creatCommet=async (req, res) => {
     console.log(req.body);
-    if (!req.body.idactivity || !req.body.idaccount) {
+    if (!req.body.idactivity || !req.body.idaccount||!req.body.content) {
         return res.status(400).json({
             erroCode: 1,
             message: 'nhập đầy đủ thông tin'

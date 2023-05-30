@@ -37,11 +37,13 @@ let deleteactivity=async (req, res) => {
 let getactivitybyid=async (req, res) => {
     let id = parseInt(req.params.id);
     if (id) {
-        let activity = await ActivityService.getactivitybyid(id);
-        if(activity){
+        let resData = await ActivityService.getactivitybyid(id);
+        if(resData.activity){
             return res.status(200).json({
                 errCode: 0,
-                message: activity,
+                message: resData.activity,
+                totalcomment:resData.totalcomment,
+                listcomment:resData.listcomment
             })
         }
         else {

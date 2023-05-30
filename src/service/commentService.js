@@ -15,10 +15,17 @@ let creatCommet=async (data) => {
             }
             else{
                 await db.Comment.create({
-                    acount_id: data.idaccount,
-                    activity_id: data.idactivity
+                    account_id: data.idaccount,
+                    activity_id: data.idactivity,
+                    content:data.content
                 })
-                const { count, rows } = await db.Comment.findAndCountAll()
+                const { count, rows } = await db.Comment.findAndCountAll(
+                    {
+                        where:{
+                            activity_id: data.idactivity
+                        }
+                    }
+                )
                 let  resData = {};
                 resData.totalcomment = count,
                 resData.listcomment=rows
@@ -64,6 +71,7 @@ let getlistcomment=async ( page, limit) => {
                 limit: limit,
                 raw: true,
                 nest: true,
+                order: [['createdAt', 'DESC']]
             })
             console.log(rows)
             let resData = {};

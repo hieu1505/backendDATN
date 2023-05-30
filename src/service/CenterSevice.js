@@ -149,11 +149,16 @@ let UpdateCenter = (params, data) => {
 let getCenterById=(id)=>{
     return new Promise(async (resolve, reject) => {
         try {
-            
+            let resData = {};
             let center=await db.Center.findOne({
                 where:{id:id}
             })
-            resolve(center)
+            countchildent=await db.Children.count({where:{
+                center_id:id
+            }})
+            resData.countchildent=countchildent
+            resData.center=center
+            resolve(resData)
         } catch (error) {
             reject(error)
         }

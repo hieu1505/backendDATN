@@ -28,10 +28,36 @@ let deleteactivity = (id) => {
 let getactivitybyid = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let resData = {};
             let activity = await db.Activity.findOne({
-                where: { id: id }
+                where: { id: id },
+                attributes: ['id', 'title','img','content','contentHTML','createdAt',[db.sequelize.fn('COUNT', db.sequelize.col('like.activity_id')), 'totalLikes']],
+                include: [
+                    {
+                        model: db.Like,
+                        required: false,
+                        as: 'like',
+                        attributes: []
+                    },
+                    {
+                        model: db.Center,
+                        required: true,
+                        as: 'center',
+                    },
+                 
+                ],
             })
-            resolve(activity)
+            const { count, rows } = await db.Comment.findAndCountAll(
+                {
+                    where:{
+                        activity_id: id
+                    }
+                }
+            )
+            resData.totalcomment = count,
+            resData.listcomment=rows,
+            resData.activity=activity
+            resolve(resData)
         } catch (error) {
             reject(error)
         }
@@ -46,7 +72,10 @@ let getAllactivity = async (key, page, limit) => {
             console.log('offset', offset, 'limit', limit);
             const { count, rows } = await db.Activity.findAndCountAll(
                 {
-                    attributes: ['id', 'title','img',[db.sequelize.fn('COUNT', db.sequelize.col('like.activity_id')), 'totalLikes']],
+                    attributes: ['id', 'title','img',[db.sequelize.fn('COUNT', db.sequelize.col('like.activity_id')), 'totalLikes'],[db.sequelize.fn('COUNT', db.sequelize.col('comment.activity_id')), 'totalComment']],
+                    
+                    group: ['Activity.id'],
+                    order: [['createdAt', 'DESC']],
                     include: [
                         {
                             model: db.Like,
@@ -54,10 +83,20 @@ let getAllactivity = async (key, page, limit) => {
                             as: 'like',
                             attributes: []
                         },
+                        {
+                            model: db.Center,
+                            required: true,
+                            as: 'center',
+                        },
+                        {
+                            model: db.Comment,
+                            required: false,
+                            as: 'comment',
+                            attributes: []
+                        },
                     ],
-                    group: ['Activity.id'],
-                    order: [['createdAt', 'DESC']]
                 }, {
+                
                 offset: offset,
                 limit: limit,
                 raw: true,
@@ -67,7 +106,7 @@ let getAllactivity = async (key, page, limit) => {
             let resData = {};
             resData.activity = rows;
             resData.limit = limit;
-            resData.totalPages = Math.ceil(count / limit);
+            resData.totalPages = Math.ceil(count.length / limit);
             resData.totalElements = count.length
             resData.page = page;
             resolve(resData);
@@ -85,12 +124,26 @@ let getAllactivitybycenterid = async (id, key, page, limit) => {
             let offset = page * limit;
             const { count, rows } = await db.Activity.findAndCountAll(
                 {
-                    attributes: ['id', 'title','img',[db.sequelize.fn('COUNT', db.sequelize.col('like.activity_id')), 'totalLikes']],
+                    attributes: ['id', 'title','img',[db.sequelize.fn('COUNT', db.sequelize.col('like.activity_id')), 'totalLikes'],[db.sequelize.fn('COUNT', db.sequelize.col('comment.activity_id')), 'totalComment']],
+                    
+                    group: ['Activity.id'],
+                    order: [['createdAt', 'DESC']],
                     include: [
                         {
                             model: db.Like,
                             required: false,
                             as: 'like',
+                            attributes: []
+                        },
+                        {
+                            model: db.Center,
+                            required: true,
+                            as: 'center',
+                        },
+                        {
+                            model: db.Comment,
+                            required: false,
+                            as: 'comment',
                             attributes: []
                         },
                     ],
@@ -111,7 +164,7 @@ let getAllactivitybycenterid = async (id, key, page, limit) => {
             let resData = {};
             resData.activity = rows;
             resData.limit = limit;
-            resData.totalPages = Math.ceil(count / limit);
+            resData.totalPages = Math.ceil(count.length / limit);
             resData.totalElements = count.length
             resData.page = page;
             resolve(resData);
