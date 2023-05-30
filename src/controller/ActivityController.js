@@ -69,7 +69,7 @@ let getactivitybycenter=async (req, res) => {
     console.log(req.params.page)
     let pageNumber = req.query.page === undefined ? 0: req.query.page;
     let limit = req.query.limit === undefined ? 10 : req.query.limit;
-    let resData=await ActivityService.getAllactivitybyacountid(id,key,pageNumber,limit)   
+    let resData=await ActivityService.getAllactivitybycenterid(id,key,pageNumber,limit)   
     let page ={};
     page.size= resData.size;
     page.totalPages= resData.totalPages;

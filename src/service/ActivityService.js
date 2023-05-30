@@ -56,7 +56,7 @@ let getAllactivity = async (key, page, limit) => {
                         },
                     ],
                     group: ['Activity.id'],
-
+                    order: [['createdAt', 'DESC']]
                 }, {
                 offset: offset,
                 limit: limit,
@@ -68,7 +68,7 @@ let getAllactivity = async (key, page, limit) => {
             resData.activity = rows;
             resData.limit = limit;
             resData.totalPages = Math.ceil(count / limit);
-            resData.totalElements = count
+            resData.totalElements = count.length
             resData.page = page;
             resolve(resData);
         } catch (error) {
@@ -76,7 +76,7 @@ let getAllactivity = async (key, page, limit) => {
         }
     })
 }
-let getAllactivitybyacountid = async (id, key, page, limit) => {
+let getAllactivitybycenterid = async (id, key, page, limit) => {
     return new Promise(async (resolve, reject) => {
         
         try {
@@ -95,16 +95,17 @@ let getAllactivitybyacountid = async (id, key, page, limit) => {
                         },
                     ],
                     group: ['Activity.id'],
-
+                    where: {
+                        center_id: id
+                    },
+                    order: [['createdAt', 'DESC']]
                 },
                 {
                     offset: offset,
                     limit: limit,
                     raw: true,
                     nest: true,
-                    where: {
-                        center_id: id
-                    }
+                   
                 }
             )
             let resData = {};
@@ -175,7 +176,7 @@ module.exports = {
     deleteactivity: deleteactivity,
     getactivitybyid: getactivitybyid,
     getAllactivity: getAllactivity,
-    getAllactivitybyacountid: getAllactivitybyacountid,
+    getAllactivitybycenterid: getAllactivitybycenterid,
     createActivity: createActivity,
     updateActivity: updateActivity
 }
