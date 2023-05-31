@@ -34,10 +34,12 @@ let deletecomment=async (req, res) => {
         })
     }
 }
-let getlistcomment=async (req, res) => {
+let getcommentbyactivity=async (req, res) => {
+    let id = parseInt(req.params.id);
+    if (id) {
     let pageNumber = req.query.page === undefined ? 0: req.query.page;
     let limit = req.query.limit === undefined ? 10 : req.query.limit;
-    let resData=await commentService.getlistcomment(key,pageNumber,limit)
+    let resData=await commentService.getlistcomment(id,pageNumber,limit)
     let page ={};
     page.size= resData.size;
     page.totalPages= resData.totalPages;
@@ -48,10 +50,19 @@ let getlistcomment=async (req, res) => {
         message: 'OK',
         page: page,
         Comment: resData.Comment,
-    })
+    })}
+    else {
+        return res.status(400).json({
+            errCode: 1,
+            message: 'Thiếu tham số id',
+        })
+    }
+
 }
+
 module.exports={
     creatCommet:creatCommet,
     deletecomment:deletecomment,
-    getlistcomment:getlistcomment
+  
+    getcommentbyactivity:getcommentbyactivity
 }

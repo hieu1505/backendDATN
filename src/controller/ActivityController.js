@@ -41,9 +41,7 @@ let getactivitybyid=async (req, res) => {
         if(resData.activity){
             return res.status(200).json({
                 errCode: 0,
-                message: resData.activity,
-                totalcomment:resData.totalcomment,
-                listcomment:resData.listcomment
+                activity:resData.activity
             })
         }
         else {

@@ -23,7 +23,26 @@ let creatCommet=async (data) => {
                     {
                         where:{
                             activity_id: data.idactivity
-                        }
+                        },
+                        include: [
+                        
+                            {
+                                model: db.Account,
+                                required: false,
+                                as: 'account',
+                                attributes: {
+                                    exclude: ['password','passwordResetToken','Token','active']
+                                },
+                                include:{
+                                    model: db.Profile,
+                                    required: true,
+                                    as: 'profile',
+                                }
+                            },
+                            
+                            
+                        ],
+                        order: [['createdAt', 'DESC']],
                     }
                 )
                 let  resData = {};
@@ -60,13 +79,16 @@ let deleteComment=async (id) => {
         }
     })
 }
-let getlistcomment=async ( page, limit) => {
+let getlistcomment=async ( id,page, limit) => {
     return new Promise(async (resolve, reject) => {
         try {
             page = page - 0;
             limit = limit - 0;
             let offset = page * limit;
             const { count, rows } = await db.Comment.findAndCountAll({
+                where:{
+                    activity_id: id
+                },
                 offset: offset,
                 limit: limit,
                 raw: true,
