@@ -13,15 +13,8 @@ const db = {};
 let sequelize;
 sequelize = new Sequelize('doantn',
 process.env.username
-
-
  ,
  process.env.PASS
-
-
-
-
-
  , {
   host: 'aws.connect.psdb.cloud',
   dialect: 'mysql',

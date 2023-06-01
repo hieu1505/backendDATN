@@ -70,6 +70,7 @@ let checklikebyidacount = async (id) => {
                     acount_id: id
                 }
             })
+            console.log(check)
             resolve(check)
         } catch (error) {
             reject(error)

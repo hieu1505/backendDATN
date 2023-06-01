@@ -39,7 +39,7 @@ let checklikebyidacount = async (req, res) => {
         return res.status(200).json({
             erroCode: 0,
             message: 'OK',
-            like: message == true ? true : false,
+            like: message? true : false,
             
         })
     }
