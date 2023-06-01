@@ -63,6 +63,5 @@ let getcommentbyactivity=async (req, res) => {
 module.exports={
     creatCommet:creatCommet,
     deletecomment:deletecomment,
-  
     getcommentbyactivity:getcommentbyactivity
 }

@@ -14,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Children, { foreignKey: 'center_id', as: 'children' })
       this.hasMany(models.Activity, { foreignKey: 'center_id', as: 'activity' })
       this.belongsTo(models.Account, { foreignKey: 'account_id', as: 'account' });
+      this.hasMany(models.Donor, { foreignKey: 'center_id', as: 'donor' })
+
     }
   }
   Center.init({

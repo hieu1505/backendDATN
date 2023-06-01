@@ -4,5 +4,5 @@ const LikeController=require('../controller/LikeController');
 
 router.post('/',authJwt.authenToken,LikeController.like)
 router.post('/dislike/',authJwt.authenToken,LikeController.dislike)
-router.get('/:id',authJwt.authenToken,LikeController.checklikebyidacount)
+router.post('/check/',authJwt.authenToken,LikeController.checklikebyidacount)
 module.exports=router

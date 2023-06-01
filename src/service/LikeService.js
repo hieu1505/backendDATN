@@ -36,6 +36,7 @@ let dislike = async (data) => {
             const like = await db.Like.findOne({
                 where: {
                     acount_id: data.idaccount,
+                    activity_id: data.idactivity
                 }
             })
             let account = await db.Account.findOne({
@@ -62,12 +63,13 @@ let dislike = async (data) => {
         }
     })
 }
-let checklikebyidacount = async (id) => {
+let checklikebyidacount = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let check = await db.Like.findOne({
                 where: {
-                    acount_id: id
+                    acount_id: data.idaccount,
+                    activity_id: data.idactivity
                 }
             })
             console.log(check)

@@ -9,11 +9,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      activity_id: {
+      center_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      profile_id: {
+      } ,
+      account_id:{
         type: Sequelize.INTEGER,
         allowNull: false,
       },

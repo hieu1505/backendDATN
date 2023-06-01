@@ -30,19 +30,20 @@ let dislike = async (req, res) => {
     })
 }
 let checklikebyidacount = async (req, res) => {
-    let id = req.params.id;
-    if (!id) {
-        return res.status(400).json({ message: 'Thiếu tham số id' });
+    if (!req.body.idactivity || !req.body.idaccount) {
+        return res.status(400).json({
+            erroCode: 1,
+            message: 'nhập đầy đủ thông tin'
+        })
     }
-    else {
-        let message = await likeService.checklikebyidacount(id)
+        let message = await likeService.checklikebyidacount(req.body)
         return res.status(200).json({
             erroCode: 0,
             message: 'OK',
             like: message? true : false,
             
         })
-    }
+    
 }
 module.exports = {
     like: like,

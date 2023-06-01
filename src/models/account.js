@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasOne(models.Center,{foreignKey:'account_id',as:'center'})
       this.hasMany(models.Like, { foreignKey: 'acount_id', as: 'like' });
       this.hasMany(models.Comment, { foreignKey: 'account_id', as: 'comment' })
+      this.hasMany(models.Donor, { foreignKey: 'acount_id', as: 'donor' });
     }
   }
   Account.init({

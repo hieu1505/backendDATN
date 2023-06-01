@@ -11,14 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Account, { foreignKey: 'account_id', as: 'account' });
+      this.belongsTo(models.Center, { foreignKey: 'center_id', as: 'center' });
     }
   }
   Donor.init({
-    activity_id: {
+    center_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    profile_id: {
+    } ,
+    account_id:{
       type: DataTypes.INTEGER,
       allowNull: false,
     },
