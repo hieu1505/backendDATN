@@ -64,7 +64,7 @@ let getAllactivity = async (key, page, limit) => {
             console.log('offset', offset, 'limit', limit);
             const { count, rows } = await db.Activity.findAndCountAll(
                 {
-                    attributes: ['id', 'title','img','createdAt','updatedAt',[db.sequelize.fn('COUNT', db.sequelize.col('like.activity_id')), 'totalLikes'],[db.sequelize.fn('COUNT', db.sequelize.col('comment.activity_id')), 'totalComment']],
+                    attributes: ['id', 'title','img','createdAt','updatedAt',[db.sequelize.fn('COUNT', db.sequelize.col('comment.activity_id')), 'totalComment'],[db.sequelize.fn('COUNT', db.sequelize.col('like.activity_id')), 'totalLike']],
                     
                     group: ['Activity.id'],
                     order: [['createdAt', 'DESC']],

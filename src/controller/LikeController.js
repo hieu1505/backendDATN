@@ -40,7 +40,7 @@ let checklikebyidacount = async (req, res) => {
             erroCode: 0,
             message: 'OK',
             like: message == true ? true : false,
-            listlike:listlike
+            
         })
     }
 }

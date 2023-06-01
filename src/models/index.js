@@ -21,6 +21,7 @@ process.env.username
 
 
 
+
  , {
   host: 'aws.connect.psdb.cloud',
   dialect: 'mysql',

@@ -89,6 +89,24 @@ let getlistcomment=async ( id,page, limit) => {
                 where:{
                     activity_id: id
                 },
+                include: [
+                        
+                    {
+                        model: db.Account,
+                        required: false,
+                        as: 'account',
+                        attributes: {
+                            exclude: ['password','passwordResetToken','Token','active']
+                        },
+                        include:{
+                            model: db.Profile,
+                            required: true,
+                            as: 'profile',
+                        }
+                    },
+                    
+                    
+                ],
                 offset: offset,
                 limit: limit,
                 raw: true,
