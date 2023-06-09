@@ -12,11 +12,11 @@ const db = {};
 
 let sequelize;
 sequelize = new Sequelize('doantn',
-// process.env.username
-"97v7evgjh3bq28bw9jnt"
+process.env.username
+
  ,
-//  process.env.PASS
-'pscale_pw_6uFc9Qk16e9JLFkdSTuKdfFmlVwwNUBauQ4PwThL2zw'
+ process.env.PASS
+
 
  , {
   host: 'aws.connect.psdb.cloud',
