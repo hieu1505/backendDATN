@@ -52,6 +52,11 @@ let getAllChildrenbycenter= async(id ,key,page,limit)=>{
             limit = limit - 0;
             let offset = page * limit;
             const { count, rows } = await db.Children.findAndCountAll({
+                where:{
+                    [Op.or]: [
+                        { name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE', '%' + key + '%') },
+                    ]
+                },
                 offset: offset,
                 limit: limit,
                 raw: true,
@@ -140,6 +145,11 @@ let getAllChildren=async(key,page,limit)=>{
             limit = limit - 0;
             let offset = page * limit;
             const { count, rows } = await db.Children.findAndCountAll({
+                where:{
+                    [Op.or]: [
+                        { name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE', '%' + key + '%') },
+                    ]
+                },
                 offset: offset,
                 limit: limit,
                 raw: true,

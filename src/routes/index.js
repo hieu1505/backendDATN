@@ -7,10 +7,11 @@ const comment=require('./comment')
 const like=require('./like')
 const donor=require('./donor')
 const express = require('express')
+const payment=require('./payment')
 const router=express.Router()
-router.post("/status",function(req, res){
-    console.log(req.body.name)})
+
 router.use('/auth',auth)
+router.use('/',payment)
 router.use('/account',account)
 router.use('/center',center)
 router.use('/children',children)
@@ -18,9 +19,4 @@ router.use('/activity',activity)
 router.use('/like',like)
 router.use('/comment',comment)
 router.use('/donor',donor)
-
-
-
-
-
 module.exports = router;

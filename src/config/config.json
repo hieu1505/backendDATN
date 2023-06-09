@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "8s33og79dn5qpq23y17v",
-    "password": "pscale_pw_o61lW2hP5bSSV3MfyNLfNXRJSQyYybTXgFwXijY7u6V",
+    "username": "97v7evgjh3bq28bw9jnt",
+    "password": "pscale_pw_6uFc9Qk16e9JLFkdSTuKdfFmlVwwNUBauQ4PwThL2zw",
     "database": "doantn",
     "host": "aws.connect.psdb.cloud",
     "dialect": "mysql",

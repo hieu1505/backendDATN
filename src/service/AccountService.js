@@ -436,6 +436,6 @@ module.exports = {
     getaccountById:getaccountById,
     UpdateAccount:UpdateAccount,
     verifyUser:verifyUser,
-    UpdateAccounttoadmin:UpdateAccounttoadmin
-
+    UpdateAccounttoadmin:UpdateAccounttoadmin,
+    
 }

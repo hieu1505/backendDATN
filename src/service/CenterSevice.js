@@ -2,7 +2,63 @@ const db = require('../models');
 const bcrypt = require('bcryptjs');
 const AuthService =require('./AuthService') ;
 const salt = bcrypt.genSaltSync(10);
+const Chance = require('chance');
+const chance = new Chance();
+const { Sequelize, Op, DataTypes } = require('sequelize');
 
+let seedData = async () => {
+    try {
+      // Đồng bộ hóa mô hình với cơ sở dữ liệu
+      const statusOptions = ['cơ nhỡ', 'lang thang', 'bỏ rơi', 'mồ côi'];
+      for (let i = 8; i < 507; i++) {
+        // Tạo dữ liệu ngẫu nhiên sử dụng Faker
+        const name = chance.name();
+        const email = chance.email();
+        const address = chance.address();
+        const image = chance.avatar();
+        const gender = '1';
+        const phoneNumber = parseInt(chance.phone().replace(/\D/g, ''));
+        const birthday = chance.birthday();
+        // let hashPasswordFromBcrypt = await hashUserPassword('123456');
+        // let [role, created] = await db.Role.findOrCreate({
+        //   where: { name: 'user' },
+        // });
+        const status = chance.pickone(statusOptions);
+        const age=chance.integer({ min: 1, max: 19 })
+        let chidren =await db.Children.findByPk(i);
+        if(chidren.gender==1){
+            chidren.update({
+                personalPicture:'https://res.cloudinary.com/drotiisfy/image/upload/v1665540808/profiles/male_default_avatar.jng_tgqrqf.jpg'
+            })
+        }
+        else{
+            chidren.update({
+                personalPicture: 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540809/profiles/female_defaule_avatar_ezuxcv.jpg'
+            })
+        }
+
+        // Tạo bản ghi mới trong cơ sở dữ liệu
+        // const children=await db.Children.create({
+        //     name:name,
+        //     personalPicture:image,
+        //     status:status,
+        //     gender:gender=== '1' ? true : false,
+        //     age:age,
+        //     JoinDate:birthday,
+        //     center_id:16
+        // })
+      }
+  
+      console.log('Dữ liệu đã được tạo thành công.');
+    } catch (error) {
+      console.error('Lỗi khi tạo dữ liệu:', error);
+    } finally {
+      // Đóng kết nối với cơ sở dữ liệu sau khi hoàn thành
+      await db.sequelize.close();
+    }
+  };
+  
+  
 let hashUserPassword = (password) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -101,6 +157,11 @@ let getAllCenter = async (key, page, limit) => {
                 limit: limit,
                 raw: true,
                 nest: true,
+                where:{
+                    [Op.or]: [
+                        { name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE', '%' + key + '%') },
+                    ]
+                }
             })
             console.log(rows)
             let resData = {};
@@ -176,11 +237,24 @@ let getcenterbyacountid=(id)=>{
         }
     })
 }
+let getallcenterAL=async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let center= db.Center.findAll()
+            resolve(center)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     createCenter: createCenter,
     deleteCenter: deleteCenter,
     getAllCenter: getAllCenter,
     UpdateCenter: UpdateCenter,
     getCenterById:getCenterById,
-    getcenterbyacountid:getcenterbyacountid
+    getcenterbyacountid:getcenterbyacountid,
+    getallcenterAL:getallcenterAL,
+    seedData:seedData
 }
