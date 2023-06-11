@@ -1,5 +1,5 @@
 const db = require('../models');
-
+const { Sequelize, Op, DataTypes } = require('sequelize');
 let deleteChildren=(id)=>{
     return new Promise(async (resolve, reject) => {
         try {
@@ -52,15 +52,16 @@ let getAllChildrenbycenter= async(id ,key,page,limit)=>{
             limit = limit - 0;
             let offset = page * limit;
             const { count, rows } = await db.Children.findAndCountAll({
-                where:{
-                    [Op.or]: [
-                        { name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE', '%' + key + '%') },
-                    ]
-                },
+                
                 offset: offset,
                 limit: limit,
                 raw: true,
                 nest: true,
+                where: {
+                    [Op.or]: [
+                      { 'Children.name': db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('Children.name')), 'LIKE', '%' + key + '%') },
+                    ]
+                  },
                 where:{
                     center_id:id
                 }
@@ -144,27 +145,27 @@ let getAllChildren=async(key,page,limit)=>{
             page = page - 0;
             limit = limit - 0;
             let offset = page * limit;
+            console.log(key)
             const { count, rows } = await db.Children.findAndCountAll({
-                where:{
-                    [Op.or]: [
-                        { name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE', '%' + key + '%') },
-                    ]
+                where: {
+                  [Op.or]: [
+                    { 'Children.name': db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('Children.name')), 'LIKE', '%' + key + '%') },
+                  ]
                 },
                 offset: offset,
                 limit: limit,
                 raw: true,
                 nest: true,
                 include: [
-                    {
-                        model: db.Center,
-                        required: true,
-                        as: 'center',
-                    },
+                  {
+                    model: db.Center,
+                    required: true,
+                    as: 'center',
+                  },
                 ]
-                
-
-            })
-            console.log(rows)
+              });
+              
+            // console.log(rows)
             let resData = {};
             resData.children = rows;
             resData.limit = limit;

@@ -173,7 +173,7 @@ let getAllAcount = async (key, page, limit) => {
             page = page - 0;
             limit = limit - 0;
             let offset = page * limit;
-            console.log('aaa'+page)
+           
             const { count, rows } = await db.Account.findAndCountAll({
                 include: [
                     {

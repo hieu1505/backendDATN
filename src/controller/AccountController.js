@@ -40,7 +40,7 @@ let getAllAcount =async (req,res)=>{
     }
     console.log(req.params.page)
     let pageNumber = req.query.page === undefined ? 0: req.query.page;
-    let limit = req.query.limit === undefined ? 10 : req.query.limit;
+    let limit = req.query.limit === undefined ? 20 : req.query.limit;
 
     let resData=await AccountService.getAllAcount(key,pageNumber,limit)
 

@@ -121,6 +121,7 @@ let UpdateChildren=async (req,res)=>{
     let resData=await ChildrenService.UpdateChildren(req.params,req.params)
 }
 let getallChildren=async (req,res)=>{
+    console.log(req.query.key)
     if( req.query.key === undefined){
         key = ''
     } else{

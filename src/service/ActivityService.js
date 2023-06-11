@@ -1,4 +1,5 @@
 const { where } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const db = require('../models');
 
 let deleteactivity = (id) => {
@@ -61,55 +62,42 @@ let getAllactivity = async (key, page, limit) => {
             page = page - 0;
             limit = limit - 0;
             let offset = page * limit;
-            console.log('offset', offset, 'limit', limit);
-            const { count, rows } = await db.Activity.findAndCountAll(
-                {
-                  attributes: ['id', 'title', 'img', 'createdAt', 'updatedAt'],
-                  include: [
-                    {
-                      model: db.Like,
-                      required: false,
-                      as: 'like',
-                      attributes: [],
-                    },
-                    {
-                      model: db.Center,
-                      required: true,
-                      as: 'center',
-                    },
-                    {
-                      model: db.Comment,
-                      required: false,
-                      as: 'comment',
-                      attributes: [],
-                    },
-                  ],
-                  group: ['Activity.id'],
-                  order: [['createdAt', 'DESC']],
-                  offset: offset,
-                  limit: limit,
-                  raw: true,
-                }
-              );
-              
-              // Tính toán tổng số lượng comment và like của mỗi hoạt động
-              const activityIds = rows.map((row) => row.id);
-              const commentCounts = await db.Comment.count({
-                where: { activity_id: activityIds },
-                group: ['activity_id'],
-              });
-              const likeCounts = await db.Like.count({
-                where: { activity_id: activityIds },
-                group: ['activity_id'],
-              });
-              
-              // Gán tổng số lượng comment và like cho mỗi hoạt động
-              rows.forEach((row) => {
-                const activityId = row.id;
-                const commentCount = commentCounts.find((count) => count.activity_id === activityId);
-                const likeCount = likeCounts.find((count) => count.activity_id === activityId);
-                row.totalComment = commentCount ? commentCount.count : 0;
-                row.totalLike = likeCount ? likeCount.count : 0;
+            
+            const { count, rows } = await db.Activity.findAndCountAll({
+                attributes: [
+                  'id',
+                  'title',
+                  'img',
+                  'createdAt',
+                  'updatedAt',
+                  [Sequelize.literal('(SELECT COUNT(*) FROM Likes WHERE Likes.activity_id = Activity.id)'), 'totalLike'],
+                  [Sequelize.literal('(SELECT COUNT(*) FROM Comments WHERE Comments.activity_id = Activity.id)'), 'totalComment']
+                ],
+                group: ['Activity.id'],
+                include: [
+                  {
+                    model: db.Like,
+                    required: false,
+                    as: 'like',
+                    attributes: []
+                  },
+                  {
+                    model: db.Center,
+                    required: true,
+                    as: 'center',
+                  },
+                  {
+                    model: db.Comment,
+                    required: false,
+                    as: 'comment',
+                    attributes: []
+                  },
+                ],
+                order: [['createdAt', 'DESC']],
+              },{
+                
+                offset: offset,
+                limit: limit,
               });
               
               // Tạo đối tượng kết quả
@@ -135,9 +123,15 @@ let getAllactivitybycenterid = async (id, key, page, limit) => {
             let offset = page * limit;
             const { count, rows } = await db.Activity.findAndCountAll(
                 {
-                    attributes: ['id', 'title','img','createdAt','updatedAt',[db.sequelize.fn('COUNT', db.sequelize.col('like.activity_id')), 'totalLikes'],[db.sequelize.fn('COUNT', db.sequelize.col('comment.activity_id')), 'totalComment']],
-                    
-                    group: ['Activity.id'],
+                    attributes: [
+                        'id',
+                        'title',
+                        'img',
+                        'createdAt',
+                        'updatedAt',
+                        [Sequelize.literal('(SELECT COUNT(*) FROM Likes WHERE Likes.activity_id = Activity.id)'), 'totalLike'],
+                        [Sequelize.literal('(SELECT COUNT(*) FROM Comments WHERE Comments.activity_id = Activity.id)'), 'totalComment']
+                      ],
                     order: [['createdAt', 'DESC']],
                     include: [
                         {
@@ -173,7 +167,7 @@ let getAllactivitybycenterid = async (id, key, page, limit) => {
                 }
             )
             let resData = {};
-            resData.activity = rows;
+            resData.activity = [...new Set(rows)];
             resData.limit = limit;
             resData.totalPages = Math.ceil(count.length / limit);
             resData.totalElements = count.length
