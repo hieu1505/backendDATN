@@ -1,10 +1,9 @@
-let GetNotificationForUserByAccountId=(id) => {
+const db = require('../models');
+
+let GetNotificationForUserByAccountId=async(id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let notification = await db.Notification.findAll({
-                order: [
-                    ['id', 'DESC']
-                ],
                 where:{
                     account_id:id
                 }
@@ -15,7 +14,32 @@ let GetNotificationForUserByAccountId=(id) => {
         }
     })
 }
+let ChangeStatusNotifications=async(id, accountid) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let resData = {};
+            let notification = await db.Notification.update({
+                status: false,
+            },
+                {
+                    where: { id: id, account_id: accountid }
+                }
+            )
+            if (!notification) {
+                resData.errCode = 1;
+                resData.message = 'Không tồn tại thông báo có id này';
+            }
+            resData.errCode = 0;
+            resData.message = 'OK';
+
+            resolve(resData);
+            
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 module.exports = {
-    
+    ChangeStatusNotifications:ChangeStatusNotifications,
     GetNotificationForUserByAccountId:GetNotificationForUserByAccountId
 }
