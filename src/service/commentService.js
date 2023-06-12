@@ -1,53 +1,108 @@
 const db = require('../models');
 
-let creatCommet=async (data) => {
+let creatCommet = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let account = await db.Account.findOne({
-                where: {
-                    id: data.idaccount
-                }
-            })
+            let account = await db.Account.findByPk(data.idaccount);
 
             if (!account) {
                 resData.errCode = 1;
                 resData.errMessage = "Không tồn tại account  có id này";
             }
-            else{
+            else {
                 await db.Comment.create({
                     account_id: data.idaccount,
                     activity_id: data.idactivity,
-                    content:data.content
+                    content: data.content
                 })
                 const { count, rows } = await db.Comment.findAndCountAll(
                     {
-                        where:{
+                        where: {
                             activity_id: data.idactivity
                         },
                         include: [
-                        
+
                             {
                                 model: db.Account,
                                 required: false,
                                 as: 'account',
                                 attributes: {
-                                    exclude: ['password','passwordResetToken','Token','active']
+                                    exclude: ['password', 'passwordResetToken', 'Token', 'active']
                                 },
-                                include:{
+                                include: {
                                     model: db.Profile,
                                     required: true,
                                     as: 'profile',
                                 }
                             },
-                            
-                            
+
+
                         ],
                         order: [['createdAt', 'DESC']],
                     }
                 )
-                let  resData = {};
+                const center = await db.Center.findOne({
+                    include: [
+
+                        {
+                            model: db.Activity,
+                            required: false,
+                            as: 'activity',
+                            attributes: [],
+                            where: { id: data.idactivity }
+                        },
+                        {
+                            model: db.Account,
+                            required: false,
+                            as: 'account',
+                            attributes: {
+                                exclude: ['password', 'passwordResetToken', 'Token', 'active']
+                            },
+                            include: {
+                                model: db.Profile,
+                                required: true,
+                                as: 'profile',
+                            }
+                        },
+
+
+
+                    ]
+                })
+                console.log(center)
+                let message = `${rows[0].account.profile.name} đã bình luận vào bài viết của bạn `;
+                db.Notification.create({
+                    activity_id: data.idactivity,
+                    account_id: center.account_id,
+                    message: message,
+                    status: true
+                })
+                const uniqueRows = [];
+                const accountIdSet = new Set();
+
+                for (const row of rows) {
+                    const accountId = row.account.id;
+                    if (!accountIdSet.has(accountId)) {
+                        accountIdSet.add(accountId);
+                        uniqueRows.push(row);
+                    }
+                }
+                let message2 = `${rows[0].account.profile.name} đã bình luận vào bài viết`;
+                for (let i = 1; i < uniqueRows.length; i++) {
+                    const row = uniqueRows[i];
+                    const accountId = row.account.id;
+                    
+                        db.Notification.create({
+                            activity_id: data.idactivity,
+                            account_id: accountId,
+                            message: message2,
+                            status: true
+                          });
+                    
+                  }
+                let resData = {};
                 resData.totalcomment = count,
-                resData.listcomment=rows
+                    resData.listcomment = rows
                 resolve(resData)
             }
         } catch (error) {
@@ -55,7 +110,7 @@ let creatCommet=async (data) => {
         }
     })
 }
-let deleteComment=async (id) => {
+let deleteComment = async (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let resData = {};
@@ -66,9 +121,9 @@ let deleteComment=async (id) => {
             })
             if (!Comment) {
                 resData.errCode = 1;
-                resData.errMessage = "Không tồn tại trung tam có id này";
+                resData.errMessage = "Không tồn tại binh luan có id này";
             }
-            else{
+            else {
                 Comment.destroy();
                 resData.errCode = 0;
                 resData.errMessage = "OK";
@@ -79,33 +134,30 @@ let deleteComment=async (id) => {
         }
     })
 }
-let getlistcomment=async ( id,page, limit) => {
+let getlistcomment = async (id, page, limit) => {
     return new Promise(async (resolve, reject) => {
         try {
             page = page - 0;
             limit = limit - 0;
             let offset = page * limit;
             const { count, rows } = await db.Comment.findAndCountAll({
-                where:{
+                where: {
                     activity_id: id
                 },
                 include: [
-                        
                     {
                         model: db.Account,
                         required: false,
                         as: 'account',
                         attributes: {
-                            exclude: ['password','passwordResetToken','Token','active']
+                            exclude: ['password', 'passwordResetToken', 'Token', 'active']
                         },
-                        include:{
+                        include: {
                             model: db.Profile,
                             required: true,
                             as: 'profile',
                         }
                     },
-                    
-                    
                 ],
                 offset: offset,
                 limit: limit,
@@ -113,7 +165,17 @@ let getlistcomment=async ( id,page, limit) => {
                 nest: true,
                 order: [['createdAt', 'DESC']]
             })
-            console.log(rows)
+            const uniqueRows = [];
+            const accountIdSet = new Set();
+            for (const row of rows) {
+                const accountId = row.account.id;
+
+                if (!accountIdSet.has(accountId)) {
+                    accountIdSet.add(accountId);
+                    uniqueRows.push(row);
+                }
+            }
+            console.log(uniqueRows)
             let resData = {};
             resData.Comment = rows;
             resData.limit = limit;
@@ -127,7 +189,7 @@ let getlistcomment=async ( id,page, limit) => {
     })
 }
 module.exports = {
-    creatCommet:creatCommet,
-    deleteComment:deleteComment,
-    getlistcomment:getlistcomment
+    creatCommet: creatCommet,
+    deleteComment: deleteComment,
+    getlistcomment: getlistcomment
 }

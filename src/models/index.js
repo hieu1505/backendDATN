@@ -13,7 +13,6 @@ const db = {};
 let sequelize;
 sequelize = new Sequelize('doantn',
 process.env.username
-
  ,
  process.env.PASS
 

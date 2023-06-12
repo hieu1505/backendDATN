@@ -60,11 +60,10 @@ let getAllChildrenbycenter= async(id ,key,page,limit)=>{
                 where: {
                     [Op.or]: [
                       { 'Children.name': db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('Children.name')), 'LIKE', '%' + key + '%') },
-                    ]
-                  },
-                where:{
+                    ],
                     center_id:id
-                }
+                  },
+                
 
             })
             console.log(rows)

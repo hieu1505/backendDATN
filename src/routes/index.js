@@ -9,6 +9,7 @@ const donor=require('./donor')
 const express = require('express')
 const payment=require('./payment')
 const router=express.Router()
+const notification=require('./notification')
 
 router.use('/auth',auth)
 router.use('/',payment)
@@ -19,4 +20,5 @@ router.use('/activity',activity)
 router.use('/like',like)
 router.use('/comment',comment)
 router.use('/donor',donor)
+router.use('/notification',notification)
 module.exports = router;
