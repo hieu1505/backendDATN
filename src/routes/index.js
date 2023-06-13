@@ -10,7 +10,9 @@ const express = require('express')
 const payment=require('./payment')
 const router=express.Router()
 const notification=require('./notification')
-
+const adropt_detail=require('./adropt_detail')
+const proofs=require('./proofs')
+const adropt_request=require('./adropt_request')
 router.use('/auth',auth)
 router.use('/',payment)
 router.use('/account',account)
@@ -21,4 +23,10 @@ router.use('/like',like)
 router.use('/comment',comment)
 router.use('/donor',donor)
 router.use('/notification',notification)
+router.use('/adropt_detail',adropt_detail)
+router.use('/proofs',proofs)
+router.use('/adropt_request',adropt_request)
+
+
+
 module.exports = router;

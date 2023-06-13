@@ -11,6 +11,7 @@ let GetNotificationForUserByAccountId = async(req, res) => {
     return res.status(200).json({message: notification});
 }
 let ChangeStatusNotifications=async(req, res) => {
+    console.log('aa')
     let id = req.params.id;
     if(!id) {
         return res.status(400).json({
@@ -18,7 +19,7 @@ let ChangeStatusNotifications=async(req, res) => {
             errMessage: "Thiếu tham số id"
         })
     }
-    let resData = await notificationService.ChangeStatusNotifications(id, req.accountid);
+    let resData = await notificationService.ChangeStatusNotifications(id);
     if(resData.errCode === 0){
         return res.status(200).json({message: resData.message});
     }

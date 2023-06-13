@@ -118,7 +118,7 @@ let UpdateChildren=async (req,res)=>{
     } else{
         req.body.personalPicture=req.file.path;
     }
-    let resData=await ChildrenService.UpdateChildren(req.params,req.params)
+    let resData=await ChildrenService.UpdateChildren(req.params,req.body)
 }
 let getallChildren=async (req,res)=>{
     console.log(req.query.key)

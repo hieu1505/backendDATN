@@ -22,7 +22,7 @@ let ChangeStatusNotifications=async(id, accountid) => {
                 status: false,
             },
                 {
-                    where: { id: id, account_id: accountid }
+                    where: { id: id }
                 }
             )
             if (!notification) {
