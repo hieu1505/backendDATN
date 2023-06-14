@@ -27,7 +27,7 @@ let createproofs=async (req, res) => {
         req.body.image = req.file.path;
         let message = await proofsService.createproofs(id,req.body)
         if (message.errCode == 0) {
-            return res.status(200).json(message.errCode);
+            return res.status(200).json(message);
         } 
     }
     else {

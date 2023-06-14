@@ -6,7 +6,8 @@ let GetNotificationForUserByAccountId=async(id) => {
             let notification = await db.Notification.findAll({
                 where:{
                     account_id:id
-                }
+                },
+                order: [['createdAt', 'DESC']]
             })
             resolve(notification);
         } catch (error) {

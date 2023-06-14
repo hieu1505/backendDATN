@@ -31,12 +31,11 @@ let getadropt_detailbyacountid= (id) => {
 let creatadropt_detail=async ( data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let AccoutData = await db.Account.findOne(
-                {
-                    where: { id: data.account_id }
-                }
-            )
-            if(AccoutData){
+            let AccoutData = await db.Adropt_detail.findOne({               
+                account_id: data.account_id 
+            })
+            console.log('hhhh')
+            if(!AccoutData){
                 let adropt_detail=await db.Adropt_detail.create({
                     income:data.income,
                     marital_status:data.marital_status,
@@ -51,7 +50,7 @@ let creatadropt_detail=async ( data) => {
             else{
                 resolve({
                     errCode: 1,
-                    message: 'tai khoan ko tồn tại'
+                    message: 'Hồ sơ Đã tồn tại'
                 })
             }
         } catch (error) {
@@ -76,7 +75,7 @@ let Updateadropt_detail=(params, data) => {
                     }
                 })
                 resData.errCode = 0;
-                resData.errMessage = center
+                resData.errMessage = adropt_detail
             }
             else {
                 resData.errCode = 2;

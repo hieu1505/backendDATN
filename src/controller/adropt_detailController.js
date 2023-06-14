@@ -4,7 +4,7 @@ let getadropt_detailbyid=async (req,res)=>{
     let id = parseInt(req.params.id);
     if (id) {
         let resData = await adropt_detailService.getadropt_detailbyid(id);
-        if(resData.activity){
+        if(resData){
             return res.status(200).json({
                 errCode: 0,
                 Adropt_detail:resData.Adropt_detail
@@ -28,16 +28,16 @@ let getadropt_detailbyacountid =async (req,res)=>{
     let id = parseInt(req.params.id);
     if (id) {
         let resData = await adropt_detailService.getadropt_detailbyacountid(id);
-        if(resData.activity){
+        if(resData.Adropt_detail){
             return res.status(200).json({
                 errCode: 0,
                 Adropt_detail:resData.Adropt_detail
             })
         }
         else {
-            return res.status(404).json({
-                errCode: 1,
-                message: 'Không tìm thấy Hoso có id này',
+            return res.status(200).json({
+                errCode: 0,
+                Adropt_detail:false
             })
         }
     } else {
@@ -56,9 +56,9 @@ let creatadropt_detail=async (req, res) => {
     }
     let message=await adropt_detailService.creatadropt_detail(req.body)
     if (message.errCode == 0) {
-        return res.status(200).json(message.errCode);
+        return res.status(200).json(message);
     } else if (message.errCode == 1) {
-        return res.status(409).json(message.errCode);
+        return res.status(409).json(message);
     }   
 }
 let Updateadropt_detail=async (req,res)=>{
