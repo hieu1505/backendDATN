@@ -8,7 +8,7 @@ let getadropt_requesbychildrentid=async (req, res) => {
         if(resData.Adropt_request){
             return res.status(200).json({
                 errCode: 0,
-                activity:resData.Adropt_request
+                Adropt_request:resData.Adropt_request
             })
         }
         else {

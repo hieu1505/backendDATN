@@ -79,6 +79,13 @@ let getadropt_requesbydetailltid=(id) => {
                         model: db.Children,
                         required: false,
                         as: 'children',
+                        include: [
+                            {
+                                model: db.Center,
+                                required: false,
+                                as: 'center',
+                            }
+                        ]
                     },
                 ],
                 where: {
