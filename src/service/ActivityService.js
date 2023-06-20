@@ -127,6 +127,8 @@ let getAllactivitybycenterid = async (id, key, page, limit) => {
                         'id',
                         'title',
                         'img',
+                        'content',
+                        'contentHTML',
                         'createdAt',
                         'updatedAt',
                         [Sequelize.literal('(SELECT COUNT(*) FROM Likes WHERE Likes.activity_id = Activity.id)'), 'totalLike'],
