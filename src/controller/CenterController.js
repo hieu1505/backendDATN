@@ -217,22 +217,62 @@ let getcenterbyacountid = async (req, res) => {
 const { kmeans } = require('ml-kmeans');
 
 let getCenterAL = async (req, res) => {
-    
+
     // await CenterSevice.seedData()
     // Your existing code...
-    let center = await CenterSevice.getallcenterAL()
-    let data = center.map((course) => {
+    let centers = await CenterSevice.getallcenterAL()
+    let totalCommentlike = centers.totalCommentlike
+    let center = centers.totalAmountchildre
 
 
-        return [
-            course.id,
-            Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
-            Math.floor(Math.random() * 1001),
-            Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000,
-            Math.floor(Math.random() * 1001)
-        ];
-    });
+    const totalsByCenterId = {};
 
+    for (const item of totalCommentlike) {
+        const { center_id, totalLike, totalComment } = item;
+        if (totalsByCenterId[center_id]) {
+            totalsByCenterId[center_id].totalLike += totalLike;
+            totalsByCenterId[center_id].totalComment += totalComment;
+        } else {
+            totalsByCenterId[center_id] = {
+                totalLike,
+                totalComment
+            };
+        }
+    }
+
+    const mergedArray = Object.entries(totalsByCenterId).map(([center_id, totals]) => ({
+        id: parseInt(center_id),
+        center_id: parseInt(center_id),
+        totalLike: totals.totalLike,
+        totalComment: totals.totalComment
+    }));
+
+    console.log(mergedArray);
+    const data = [];
+    for (const obj1 of center) {
+        const { id, totalAmount, totalChildren } = obj1;
+
+        // Tìm đối tượng tương ứng trong mảng thứ hai dựa trên center_id
+        const obj2 = mergedArray.find(obj => obj.center_id === id);
+
+        if (obj2) {
+            // Chuyển đổi totalAmount từ chuỗi sang số
+            const convertedTotalAmount = Number(totalAmount);
+
+            // Ghép các thuộc tính từ cả hai đối tượng vào một đối tượng mới
+            const mergedObj = [
+                id,
+                convertedTotalAmount,
+                totalChildren,
+                obj2.totalLike,
+                obj2.totalComment
+            ];
+
+            // Thêm đối tượng đã ghép vào mảng mergedArray
+            data.push(mergedObj);
+        }
+    }
+    console.log(data)
     const maxK = 10;
     const inertias = [];
 
@@ -258,91 +298,122 @@ let getCenterAL = async (req, res) => {
         }
     }
     const { clusters, centroids } = kmeans(data, optimalK);
-    const suggestedWords = [data[1]];
+    const suggestedWords = [[0,0,92,0,0], [0,0,0,81,0],[0,246280188,0,0,0]];
 
-// Tính toán độ tương đồng giữa từ gợi ý và centroids
-const similarities = suggestedWords.map((word) => {
-  return centroids.map((centroid) => {
-    // Tính toán cosine similarity giữa từ gợi ý và centroid
-    const similarity = calculateCosineSimilarity(word, centroid);
-    return similarity;
-  });
-});
-console.log(similarities)
+    // Tính toán độ tương đồng giữa từ gợi ý và centroids
+    const similarities = suggestedWords.map((word) => {
+        return centroids.map((centroid) => {
+            // Tính toán cosine similarity giữa từ gợi ý và centroid
+            const similarity = calculateCosineSimilarity(word, centroid);
+            return similarity;
+        });
+    });
+    console.log('similarities:', similarities)
 
-// Sắp xếp và chọn các từ gợi ý dựa trên độ tương đồng
-const numSuggestions = 1; // Số lượng từ gợi ý
-const suggestions = [];
+    // Sắp xếp và chọn các từ gợi ý dựa trên độ tương đồng
+    const numSuggestions = 3; // Số lượng từ gợi ý
+    const suggestions = [];
 
-similarities.forEach((wordSimilarities, index) => {
-  const sortedSimilarities = wordSimilarities
-    .map((similarity, centroidIndex) => ({ centroidIndex, similarity }))
-    .sort((a, b) => b.similarity - a.similarity);
+    similarities.forEach((wordSimilarities, index) => {
+        const sortedSimilarities = wordSimilarities
+            .map((similarity, centroidIndex) => ({ centroidIndex, similarity }))
+            .sort((a, b) => b.similarity - a.similarity);
 
-  const topSuggestions = sortedSimilarities.slice(0, numSuggestions)
-    .map((suggestion) => ({
-      word: suggestedWords[suggestion.centroidIndex],
-      similarity: suggestion.similarity,
-      centroid: centroids[suggestion.centroidIndex] // Thêm giá trị của centroid tương ứng
+        const topSuggestions = sortedSimilarities.slice(0, numSuggestions)
+            .map((suggestion) => ({
+                word: suggestedWords[suggestion.centroidIndex],
+                similarity: suggestion.similarity,
+                centroid: centroids[suggestion.centroidIndex] // Thêm giá trị của centroid tương ứng
+            }));
+
+        suggestions.push({ word: suggestedWords[index], suggestions: topSuggestions });
+    });
+
+    // Sắp xếp suggestions theo giá trị của centroids
+    suggestions.sort((a, b) => {
+        const centroidA = a.suggestions[0].centroid;
+        const centroidB = b.suggestions[0].centroid;
+        return centroidA - centroidB;
+    });
+    const centroidList = suggestions.map((suggestion) => suggestion.suggestions[0].centroid);
+    // Hiển thị kết quả gợi ý
+    // console.log("Centroids from Suggestions:", centroidList);
+
+    // // Hiển thị trung tâm của các cụm
+    // console.log("Centroids:", centroids);
+    // console.log("clusters:", clusters);
+    // Lấy dữ liệu theo cụm
+
+    // Lấy dữ liệu của centroids
+    const dataByCentroids = centroids.map((centroid, centroidIndex) => ({
+        centroid: centroidIndex,
+        values: data.filter((_, dataIndex) => clusters[dataIndex] === centroidIndex),
     }));
-  console.log('aaa0', topSuggestions);
-  suggestions.push({ word: suggestedWords[index], suggestions: topSuggestions });
-});
+    const filteredDataByCentroids = centroids
+        .filter((centroid) => centroidList.includes(centroid))
+        .map((centroid) => {
+            const centroidIndex = centroids.indexOf(centroid);
+            return {
+                centroid: centroidIndex,
+                values: dataByCentroids[centroidIndex].values,
+            };
+        });
 
-// Sắp xếp suggestions theo giá trị của centroids
-suggestions.sort((a, b) => {
-  const centroidA = a.suggestions[0].centroid;
-  const centroidB = b.suggestions[0].centroid;
-  return centroidA - centroidB;
-});
 
-// Hiển thị kết quả gợi ý
-console.log(suggestions);
+    console.log("Filtered Data by Centroids:");
+    console.log(filteredDataByCentroids.flat());
+    const valuesFromCentroids = filteredDataByCentroids.map((data) => data.values);
+    console.log("Values from Filtered Data by Centroids:");
+    console.log(valuesFromCentroids);
+    const flattenedValues = valuesFromCentroids.flat();
 
-// Hiển thị trung tâm của các cụm
-console.log("Centroids:", centroids);
-console.log("clusters:", clusters);
+    const centersByIds = center.filter((item) => flattenedValues.some((centroid) => centroid[0] === item.id));
 
+    console.log("Centers by IDs:");
+    console.log(centersByIds);
     return res.status(200).json({
         erroCode: 0,
         message: 'OK',
-        k:optimalK,
-        data:suggestions,
-        center: centroids,
+        k: optimalK,
+        dataByCentroids: dataByCentroids,
+        suggestions: suggestions,
+        centroids: centroids,
+        filteredDataByCentroids: filteredDataByCentroids,
+
     });
 };
 
 function calculateCosineSimilarity(vectorA, vectorB) {
     // Ensure vectorA and vectorB have the same length
     if (vectorA.length !== vectorB.length) {
-      throw new Error('Vectors must have the same length');
+        throw new Error('Vectors must have the same length');
     }
-  
+
     // Calculate dot product of vectorA and vectorB
     let dotProduct = 0;
     for (let i = 0; i < vectorA.length; i++) {
-      dotProduct += vectorA[i] * vectorB[i];
+        dotProduct += vectorA[i] * vectorB[i];
     }
-  
+
     // Calculate magnitude of vectorA
     let magnitudeA = 0;
     for (let i = 0; i < vectorA.length; i++) {
-      magnitudeA += vectorA[i] ** 2;
+        magnitudeA += vectorA[i] ** 2;
     }
     magnitudeA = Math.sqrt(magnitudeA);
-  
+
     // Calculate magnitude of vectorB
     let magnitudeB = 0;
     for (let i = 0; i < vectorB.length; i++) {
-      magnitudeB += vectorB[i] ** 2;
+        magnitudeB += vectorB[i] ** 2;
     }
     magnitudeB = Math.sqrt(magnitudeB);
-  
+
     // Calculate cosine similarity
     const similarity = dotProduct / (magnitudeA * magnitudeB);
-  
+
     return similarity;
-  }
+}
 // Function to calculate inertia
 function calculateInertia(data, clusters, centroids) {
     let inertiaValue = 0;
@@ -375,5 +446,5 @@ module.exports = {
     getCenterById: getCenterById,
     getcenterbyacountid: getcenterbyacountid,
     getcenterAl: getCenterAL,
-    
+
 }

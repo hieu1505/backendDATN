@@ -1,6 +1,6 @@
 const db = require('../models');
 const bcrypt = require('bcryptjs');
-const AuthService =require('./AuthService') ;
+const AuthService = require('./AuthService');
 const salt = bcrypt.genSaltSync(10);
 const Chance = require('chance');
 const chance = new Chance();
@@ -8,57 +8,77 @@ const { Sequelize, Op, DataTypes } = require('sequelize');
 
 let seedData = async () => {
     try {
-      // Đồng bộ hóa mô hình với cơ sở dữ liệu
-      const statusOptions = ['cơ nhỡ', 'lang thang', 'bỏ rơi', 'mồ côi'];
-      for (let i = 8; i < 507; i++) {
-        // Tạo dữ liệu ngẫu nhiên sử dụng Faker
-        const name = chance.name();
-        const email = chance.email();
-        const address = chance.address();
-        const image = chance.avatar();
-        const gender = '1';
-        const phoneNumber = parseInt(chance.phone().replace(/\D/g, ''));
-        const birthday = chance.birthday();
-        // let hashPasswordFromBcrypt = await hashUserPassword('123456');
-        // let [role, created] = await db.Role.findOrCreate({
-        //   where: { name: 'user' },
-        // });
-        const status = chance.pickone(statusOptions);
-        const age=chance.integer({ min: 1, max: 19 })
-        let chidren =await db.Children.findByPk(i);
-        if(chidren.gender==1){
-            chidren.update({
-                personalPicture:'https://res.cloudinary.com/drotiisfy/image/upload/v1665540808/profiles/male_default_avatar.jng_tgqrqf.jpg'
-            })
-        }
-        else{
-            chidren.update({
-                personalPicture: 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540809/profiles/female_defaule_avatar_ezuxcv.jpg'
-            })
+        // Đồng bộ hóa mô hình với cơ sở dữ liệu
+        const statusOptions = ['Thương rứa hè', 'Thương cháu quá .bị mẹ bỏ rơi !!!', 'Thương con quá', 'Tội quá đi', 'Thương con quá. Chúc con một đời bình an', 'Xin nuôi được không ạ', 'Quá trời đáng iu gòi :3', 'Các con ngày càng lớn càng ngoan cảm ơn các mẹ Các dì....', 'Xin gửi lời cảm ơn đến các mẹ và lời chúc tốt lành đến các bạn nhỏ trong làng', 'cho đi là còn mãi', 'Thương con'];
+        for (let i = 29; i < 433; i += 18) {
+            // Tạo dữ liệu ngẫu nhiên sử dụng Faker
+            // const name = chance.name();
+            // const email = chance.email();
+            // const address = chance.address();
+            // const image = chance.avatar();
+            // const gender = '1';
+            // const phoneNumber = parseInt(chance.phone().replace(/\D/g, ''));
+            // const birthday = chance.birthday();
+            // // let hashPasswordFromBcrypt = await hashUserPassword('123456');
+            // // let [role, created] = await db.Role.findOrCreate({
+            // //   where: { name: 'user' },
+            // // });
+            const status = chance.pickone(statusOptions);
+            // const age=chance.integer({ min: 1, max: 19 })
+            // // let chidren =await db.Children.findByPk(i);
+            // // if(chidren.gender==1){
+            // //     chidren.update({
+            // //         personalPicture:'https://res.cloudinary.com/drotiisfy/image/upload/v1665540808/profiles/male_default_avatar.jng_tgqrqf.jpg'
+            // //     })
+            // // }
+            // // else{
+            // //     chidren.update({
+            // //         personalPicture: 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540809/profiles/female_defaule_avatar_ezuxcv.jpg'
+            // //     })
+            // // }
+
+            // // Tạo bản ghi mới trong cơ sở dữ liệu
+            // // const children=await db.Children.create({
+            // //     name:name,
+            // //     personalPicture:image,
+            // //     status:status,
+            // //     gender:gender=== '1' ? true : false,
+            // //     age:age,
+            // //     JoinDate:birthday,
+            // //     center_id:23
+            // // })
+            //tao donor
+            //     const amount=chance.integer({ min: 100000, max: 500000 })
+            //     const donor= await db.Donor.create({
+            //         center_id:23,
+            //         account_id:i,
+            //         amount:amount,
+            //         note:'Hỗ trợ trẻ tai trung tâm'
+            //         })
+            //tao like
+            // await db.Like.create({
+            //     acount_id: i,
+            //     activity_id: 26
+
+            // })
+            // tao comment
+            // await db.Comment.create({
+            //     account_id: i,
+            //     activity_id: 26,
+            //     content: status
+            // })
         }
 
-        // Tạo bản ghi mới trong cơ sở dữ liệu
-        // const children=await db.Children.create({
-        //     name:name,
-        //     personalPicture:image,
-        //     status:status,
-        //     gender:gender=== '1' ? true : false,
-        //     age:age,
-        //     JoinDate:birthday,
-        //     center_id:16
-        // })
-      }
-  
-      console.log('Dữ liệu đã được tạo thành công.');
+        console.log('Dữ liệu đã được tạo thành công.');
     } catch (error) {
-      console.error('Lỗi khi tạo dữ liệu:', error);
+        console.error('Lỗi khi tạo dữ liệu:', error);
     } finally {
-      // Đóng kết nối với cơ sở dữ liệu sau khi hoàn thành
-      await db.sequelize.close();
+        // Đóng kết nối với cơ sở dữ liệu sau khi hoàn thành
+        await db.sequelize.close();
     }
-  };
-  
-  
+};
+
+
 let hashUserPassword = (password) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -69,12 +89,12 @@ let hashUserPassword = (password) => {
         }
     })
 }
-let createCenter = async ( data) => {
+let createCenter = async (data) => {
     return new Promise(
         async (resolve, reject) => {
             try {
                 let checkemail = await AuthService.checkAccountEmail(data.email)
-                
+
                 if (checkemail === true) {
                     resolve({
                         errCode: 1,
@@ -100,7 +120,7 @@ let createCenter = async ( data) => {
                         active: data.active,
                         role_id: role.id,
                         profile_id: profile.id,
-                        Token:''
+                        Token: ''
 
                     })
                     const center = await db.Center.create({
@@ -157,7 +177,7 @@ let getAllCenter = async (key, page, limit) => {
                 limit: limit,
                 raw: true,
                 nest: true,
-                where:{
+                where: {
                     [Op.or]: [
                         { name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE', '%' + key + '%') },
                     ]
@@ -177,7 +197,7 @@ let getAllCenter = async (key, page, limit) => {
     })
 }
 let UpdateCenter = (params, data) => {
-    console.log(data)
+    console.log('a', data)
     return new Promise(async (resolve, reject) => {
         let resData = {};
         try {
@@ -186,12 +206,12 @@ let UpdateCenter = (params, data) => {
                 await db.Center.update({
                     name: data.name,
                     email: data.email,
-                    adress: data.adress,
+                    adress: data.address,
                     phoneNumber: data.phoneNumber,
                     picture: data.image,
-                },{
-                    where:{
-                        id:center.id
+                }, {
+                    where: {
+                        id: center.id
                     }
                 })
                 resData.errCode = 0;
@@ -207,29 +227,31 @@ let UpdateCenter = (params, data) => {
         }
     })
 }
-let getCenterById=(id)=>{
+let getCenterById = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let resData = {};
-            let center=await db.Center.findOne({
-                where:{id:id}
+            let center = await db.Center.findOne({
+                where: { id: id }
             })
-            countchildent=await db.Children.count({where:{
-                center_id:id
-            }})
-            resData.countchildent=countchildent
-            resData.center=center
+            countchildent = await db.Children.count({
+                where: {
+                    center_id: id
+                }
+            })
+            resData.countchildent = countchildent
+            resData.center = center
             resolve(resData)
         } catch (error) {
             reject(error)
         }
     })
 }
-let getcenterbyacountid=(id)=>{
+let getcenterbyacountid = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let center=await db.Center.findOne({
-                where:{account_id:id}
+            let center = await db.Center.findOne({
+                where: { account_id: id }
             })
             resolve(center)
         } catch (error) {
@@ -237,11 +259,97 @@ let getcenterbyacountid=(id)=>{
         }
     })
 }
-let getallcenterAL=async () => {
+let getallcenterAL = async () => {
     return new Promise(async (resolve, reject) => {
         try {
-            let center= db.Center.findAll()
-            resolve(center)
+            console.log('asa')
+            // const centers = await db.Center.findAll({
+            //     attributes: ['name', 'email', 'adress', 'phoneNumber', 'picture', 'account_id', [db.sequelize.fn('SUM', db.sequelize.col('donor.amount')), 'totalAmount']],
+            //     include: [{
+            //         model: db.Donor,
+            //         as: 'donor',
+            //         attributes: [],
+            //     },{
+            //         model: db.Activity,
+            //         as: 'activity',
+            //         attributes: [
+            //             'id',
+            //             [Sequelize.literal('(SELECT COUNT(*) FROM Likes WHERE Likes.activity_id = activity.id)'), 'totalLike'],
+            //             [Sequelize.literal('(SELECT COUNT(*) FROM Comments WHERE Comments.activity_id = activity.id)'), 'totalComment']
+            //           ],
+            //           include: [
+            //             {
+            //               model: db.Like,
+            //               required: false,
+            //               attributes: [],
+            //               as: 'like',
+            //             },
+            //             {
+            //                 model: db.Comment,
+            //                 required: false,
+            //                 as: 'comment',
+            //                 attributes: []
+            //               },
+            //         ]
+            //     },
+            
+            // ],
+            //     group: ['Center.id', 'Center.name', 'Center.email', 'Center.adress', 'Center.phoneNumber', 'Center.picture', 'Center.account_id','activity.id'],
+               
+            // });
+           const centers = await db.Center.findAll({
+                    attributes: ['id','name', 'email', 'adress', 'phoneNumber', 'picture', 'account_id',[db.sequelize.fn('SUM', db.sequelize.col('donor.amount')), 'totalAmount'],[Sequelize.literal('(SELECT COUNT(*) FROM Children WHERE Children.center_id = Center.id)'), 'totalChildren']],
+                    include: [{
+                        model: db.Donor,
+                        as: 'donor',
+                        attributes: [],
+                    },{
+                        model: db.Children,
+                        as: 'children',
+                        attributes: [],
+                    }],
+                    group: ['Center.id'],
+                    raw: true
+                })
+            const centerIds = centers.map(center => center.id);
+          const a=  await db.Activity.findAll(
+                {
+                    attributes: [
+                        'id',
+                        'center_id',
+                        [Sequelize.literal('(SELECT COUNT(*) FROM Likes WHERE Likes.activity_id = Activity.id)'), 'totalLike'],
+                        [Sequelize.literal('(SELECT COUNT(*) FROM Comments WHERE Comments.activity_id = Activity.id)'), 'totalComment']
+                      ],
+                   
+                    include: [
+                        {
+                            model: db.Like,
+                            required: false,
+                            as: 'like',
+                            attributes: []
+                        },
+                       
+                        {
+                            model: db.Comment,
+                            required: false,
+                            as: 'comment',
+                            attributes: []
+                        },
+                    ],
+                    group: ['Activity.id'],
+                    where: {
+                        center_id: {
+                            [Op.in]: centerIds
+                        }
+                    },
+                    raw: true
+                },
+               
+            )
+            let resData = {};
+            resData.totalAmountchildre=centers;
+            resData.totalCommentlike=a
+            resolve(resData)
         } catch (error) {
             reject(error)
         }
@@ -253,8 +361,8 @@ module.exports = {
     deleteCenter: deleteCenter,
     getAllCenter: getAllCenter,
     UpdateCenter: UpdateCenter,
-    getCenterById:getCenterById,
-    getcenterbyacountid:getcenterbyacountid,
-    getallcenterAL:getallcenterAL,
-    seedData:seedData
+    getCenterById: getCenterById,
+    getcenterbyacountid: getcenterbyacountid,
+    getallcenterAL: getallcenterAL,
+    seedData: seedData
 }
