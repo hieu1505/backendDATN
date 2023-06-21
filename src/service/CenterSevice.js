@@ -10,7 +10,7 @@ let seedData = async () => {
     try {
         // Đồng bộ hóa mô hình với cơ sở dữ liệu
         const statusOptions = ['Thương rứa hè', 'Thương cháu quá .bị mẹ bỏ rơi !!!', 'Thương con quá', 'Tội quá đi', 'Thương con quá. Chúc con một đời bình an', 'Xin nuôi được không ạ', 'Quá trời đáng iu gòi :3', 'Các con ngày càng lớn càng ngoan cảm ơn các mẹ Các dì....', 'Xin gửi lời cảm ơn đến các mẹ và lời chúc tốt lành đến các bạn nhỏ trong làng', 'cho đi là còn mãi', 'Thương con'];
-        for (let i = 29; i < 433; i += 18) {
+        for (let i = 52; i < 53; i ++) {
             // Tạo dữ liệu ngẫu nhiên sử dụng Faker
             // const name = chance.name();
             // const email = chance.email();
@@ -67,6 +67,19 @@ let seedData = async () => {
             //     activity_id: 26,
             //     content: status
             // })
+            let profile =await db.Profile.findByPk(533);
+        
+            if(profile.gender==true){
+                profile.update({
+                    avatar:'https://res.cloudinary.com/drotiisfy/image/upload/v1665540808/profiles/male_default_avatar.jng_tgqrqf.jpg'
+                })
+            }
+            else{
+                profile.update({
+                    avatar: 'https://res.cloudinary.com/drotiisfy/image/upload/v1665540809/profiles/female_defaule_avatar_ezuxcv.jpg'
+                })
+            }
+
         }
 
         console.log('Dữ liệu đã được tạo thành công.');

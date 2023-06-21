@@ -160,60 +160,7 @@ let getcenterbyacountid = async (req, res) => {
 
 
 
-// let getcenterAl=async(req,res)=>{
-//     let key;
-//     if( req.query.key === undefined){
-//         key = ''
-//     } else{
-//         key= req.query.key
-//     }
-//     let center=await CenterSevice.getallcenterAL()
-//     let data=center.map(
-//         (course)=>{
-//             let k={}
-//             k.id=course.id,
-//             k.totalchidren=Math.floor(Math.random() * (1000 - 100 + 1)) + 100;
-//             k.totalLike=Math.floor(Math.random() * 1001);
-//             k.totaldonate=Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
-//             k.totalcomment=Math.floor(Math.random() * 1001);
-//             return k
-//         }
-//     )
-//     const maxK = 10;
-//     const inertias = [];
-//     for (let k = 1; k <= maxK; k++) {
-//         // Khởi tạo mô hình K-means
-//         const kmeans = new KMeans({ k });
 
-//         // Huấn luyện mô hình
-//         kmeans.train(data);
-
-//         // Lấy các trung tâm cụm
-//         const centers = kmeans.centroids;
-
-//         // Tính inertia (tổng bình phương khoảng cách)
-//         const inertiaValue = inertia(data, centers, 'euclidean');
-
-//         // Lưu trữ inertia
-//         inertias.push(inertiaValue);
-//       }
-//       let optimalK;
-//       let minDiff = Infinity;
-
-//       for (let i = 1; i < inertias.length - 1; i++) {
-//         const diff = Math.abs(inertias[i] - inertias[i + 1]);
-//         if (diff < minDiff) {
-//           minDiff = diff;
-//           optimalK = i + 1;
-//         }
-//       }
-//     return res.status(200).json({
-//         erroCode:0,
-//         message: 'OK',
-//         // page: page,
-//         center:optimalK,
-//     })
-// }
 const { kmeans } = require('ml-kmeans');
 
 let getCenterAL = async (req, res) => {
@@ -273,7 +220,7 @@ let getCenterAL = async (req, res) => {
         }
     }
     console.log(data)
-    const maxK = 10;
+    const maxK = 7;
     const inertias = [];
 
     for (let k = 1; k <= maxK; k++) {
@@ -298,7 +245,7 @@ let getCenterAL = async (req, res) => {
         }
     }
     const { clusters, centroids } = kmeans(data, optimalK);
-    const suggestedWords = [[0,0,92,0,0], [0,0,0,81,0],[0,246280188,0,0,0]];
+    const suggestedWords = [ [0,0,0,81,0],[0,246280188,0,0,0]];
 
     // Tính toán độ tương đồng giữa từ gợi ý và centroids
     const similarities = suggestedWords.map((word) => {
@@ -311,7 +258,7 @@ let getCenterAL = async (req, res) => {
     console.log('similarities:', similarities)
 
     // Sắp xếp và chọn các từ gợi ý dựa trên độ tương đồng
-    const numSuggestions = 3; // Số lượng từ gợi ý
+    const numSuggestions = 2; // Số lượng từ gợi ý
     const suggestions = [];
 
     similarities.forEach((wordSimilarities, index) => {
@@ -375,9 +322,10 @@ let getCenterAL = async (req, res) => {
         erroCode: 0,
         message: 'OK',
         k: optimalK,
-        dataByCentroids: dataByCentroids,
-        suggestions: suggestions,
-        centroids: centroids,
+        // dataByCentroids: dataByCentroids,
+        center:centersByIds,
+        // suggestions: suggestions,
+        // centroids: centroids,
         filteredDataByCentroids: filteredDataByCentroids,
 
     });
