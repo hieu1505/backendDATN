@@ -7,7 +7,8 @@ let GetNotificationForUserByAccountId=async(id) => {
                 where:{
                     account_id:id
                 },
-                order: [['createdAt', 'DESC']]
+                order: [['createdAt', 'DESC']],
+                
             })
             resolve(notification);
         } catch (error) {

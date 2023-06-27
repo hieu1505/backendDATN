@@ -136,23 +136,13 @@ let getAllactivitybycenterid = async (id, key, page, limit) => {
                       ],
                     order: [['createdAt', 'DESC']],
                     include: [
-                        {
-                            model: db.Like,
-                            required: false,
-                            as: 'like',
-                            attributes: []
-                        },
+                        
                         {
                             model: db.Center,
                             required: true,
                             as: 'center',
                         },
-                        {
-                            model: db.Comment,
-                            required: false,
-                            as: 'comment',
-                            attributes: []
-                        },
+                       
                     ],
                     group: ['Activity.id'],
                     where: {

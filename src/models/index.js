@@ -15,8 +15,10 @@ sequelize = new Sequelize('doantn',
 process.env.username
 
 
+
  ,
  process.env.PASS
+
 
 
  , {

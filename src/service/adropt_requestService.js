@@ -1,5 +1,7 @@
 const { where } = require('sequelize');
-const { Sequelize, DataTypes } = require('sequelize');
+
+const { Sequelize, Op, DataTypes } = require('sequelize');
+
 const db = require('../models');
 let getadropt_requesbychildrentid = (id) => {
     return new Promise(async (resolve, reject) => {
@@ -48,9 +50,9 @@ let Updateadropt_request = (params, data) => {
             let adropt_request = await db.Adropt_request.findByPk(params.id)
             if (adropt_request) {
                 await db.Adropt_request.update({
-                    children_id: data.children_id,
+                  
                     request: data.request,
-                    adropt_detail_id: data.adropt_detail_id,
+                   
                 }, {
                     where: {
                         id: adropt_request.id
@@ -125,11 +127,73 @@ let Deleteadropt_reques=(id) => {
         }
     })
 }
+let getadropt_requesbycenterid=(id,key,pageNumber , limit) => { return new Promise(async (resolve, reject) => {
+    try {
+        page = pageNumber - 0;
+            limit = limit - 0;
+            let offset = page * limit;
+        const { count, rows } = await db.Adropt_request.findAndCountAll({
+            include: [
+
+                {
+                    model: db.Children,
+                    required: true,
+                    as: 'children',
+                    where: {
+                        [Op.or]: [
+                          { 'children.name': db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('children.name')), 'LIKE', '%' + key + '%') },
+                        ],
+                        center_id:id
+                      },
+                    
+                },
+                {
+                    model: db.Adropt_detail,
+                    required: false,
+                    as: 'adropt_detail',
+                    include: [
+                        {
+                            model: db.Account,
+                            required: false,
+                            as: 'account',
+                            attributes: {
+                                exclude: ['password', 'passwordResetToken', 'Token', 'active','email','createdAt','updatedAt']
+                            },
+                            include: {
+                                model: db.Profile,
+                                required: true,
+                                as: 'profile',
+                            }
+                        },
+        
+                    ]
+                },
+
+            ],
+            offset: offset,
+            limit: limit,
+            raw: true,
+            nest: true,
+            order: [['createdAt', 'DESC']]
+           
+        })
+        let resData = {};
+        resData.adropt_request = rows;
+        resData.totalElements = count
+        resData.limit = limit;
+        resData.totalPages = Math.ceil(count / limit);
+        resData.page = page;
+        resolve(resData);
+    } catch (error) {
+        reject(error)
+    }
+})}
 module.exports = {
     getadropt_requesbychildrentid: getadropt_requesbychildrentid,
     creatadropt_request: creatadropt_request,
     Updateadropt_request: Updateadropt_request,
     getadropt_requesbydetailltid:getadropt_requesbydetailltid,
-    Deleteadropt_reques:Deleteadropt_reques
+    Deleteadropt_reques:Deleteadropt_reques,
+    getadropt_requesbycenterid:getadropt_requesbycenterid
 
 }

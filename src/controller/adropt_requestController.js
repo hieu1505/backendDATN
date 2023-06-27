@@ -45,7 +45,7 @@ let Updateadropt_request  =async (req,res)=>{
             errMessage: "Thieu tham so id"
         })
     }
-    if (!req.body.children_id || !req.body.request||!req.body.adropt_detail_id) {
+    if ( !req.body.request) {
         return res.status(400).json({
             erroCode: 1,
             message: 'nhập đầy đủ thông tin'
@@ -94,10 +94,41 @@ let Deleteadropt_reques=async (req,res)=>{
     }
     return res.status(200).json({message: resData.errMessage});
 }
+let getadropt_requesbycenterid=async (req,res)=>{
+    let id = parseInt(req.params.id);
+    let key;
+    if (req.query.key === undefined) {
+        key = ''
+    } else {
+        key = req.query.key
+    }
+    let pageNumber = req.query.page === undefined ? 0 : req.query.page;
+    let limit = req.query.limit === undefined ? 10 : req.query.limit;
+    if (id) { let resData=await adropt_requestService.getadropt_requesbycenterid(id,key, pageNumber, limit)
+        let page ={};
+        page.size= resData.size;
+        page.totalPages= resData.totalPages;
+        page.totalElements = resData.totalElements;
+        page.page = resData.page;
+        return res.status(200).json({
+            erroCode:0,
+            message: 'OK',
+            adropt_request: resData.adropt_request,
+            page: page,
+        })
+    }
+    else {
+        return res.status(400).json({
+            errCode: 1,
+            message: 'Thiếu tham số id',
+        })
+    }
+}
 module.exports={
     getadropt_requesbychildrentid:getadropt_requesbychildrentid,
     creatadropt_request:creatadropt_request,
     Updateadropt_request:Updateadropt_request,
     getadropt_requesbydetailltid:getadropt_requesbydetailltid,
-    Deleteadropt_reques:Deleteadropt_reques
+    Deleteadropt_reques:Deleteadropt_reques,
+    getadropt_requesbycenterid:getadropt_requesbycenterid
 }

@@ -164,13 +164,18 @@ let getcenterbyacountid = async (req, res) => {
 const { kmeans } = require('ml-kmeans');
 
 let getCenterAL = async (req, res) => {
-
-    // await CenterSevice.seedData()
-    // Your existing code...
-    let centers = await CenterSevice.getallcenterAL()
+   
+    let key;
+    if (req.query.key === undefined) {
+        key = ''
+    } else {
+        key = req.query.key
+    }
+  
+    let centers = await CenterSevice.getallcenterAL(key)
     let totalCommentlike = centers.totalCommentlike
     let center = centers.totalAmountchildre
-
+    
 
     const totalsByCenterId = {};
 
@@ -186,7 +191,7 @@ let getCenterAL = async (req, res) => {
             };
         }
     }
-
+    
     const mergedArray = Object.entries(totalsByCenterId).map(([center_id, totals]) => ({
         id: parseInt(center_id),
         center_id: parseInt(center_id),
@@ -194,7 +199,7 @@ let getCenterAL = async (req, res) => {
         totalComment: totals.totalComment
     }));
 
-    console.log(mergedArray);
+    // console.log(mergedArray);
     const data = [];
     for (const obj1 of center) {
         const { id, totalAmount, totalChildren } = obj1;
@@ -220,7 +225,16 @@ let getCenterAL = async (req, res) => {
         }
     }
     console.log(data)
-    const maxK = 7;
+    // console.log('key',centers.keyserch)
+    let b=[0,5948745,45,50,100]
+if(centers.keyserch.length!=0&&key!=''){
+    let Ab=data.filter((_, dataIndex) => centers.keyserch[0].id === dataIndex)
+    
+    b=Ab.reduce((acc, curr) => acc.concat(curr), []);
+    
+}
+console.log('aa',b)
+    const maxK = 8;
     const inertias = [];
 
     for (let k = 1; k <= maxK; k++) {
@@ -237,6 +251,7 @@ let getCenterAL = async (req, res) => {
     let optimalK;
     let minDiff = Infinity;
 
+
     for (let i = 1; i < inertias.length - 1; i++) {
         const diff = Math.abs(inertias[i] - inertias[i + 1]);
         if (diff < minDiff) {
@@ -245,7 +260,7 @@ let getCenterAL = async (req, res) => {
         }
     }
     const { clusters, centroids } = kmeans(data, optimalK);
-    const suggestedWords = [ [0,0,0,81,0],[0,246280188,0,0,0]];
+    const suggestedWords = [b];
 
     // Tính toán độ tương đồng giữa từ gợi ý và centroids
     const similarities = suggestedWords.map((word) => {
@@ -258,7 +273,7 @@ let getCenterAL = async (req, res) => {
     console.log('similarities:', similarities)
 
     // Sắp xếp và chọn các từ gợi ý dựa trên độ tương đồng
-    const numSuggestions = 2; // Số lượng từ gợi ý
+    const numSuggestions = 1; // Số lượng từ gợi ý
     const suggestions = [];
 
     similarities.forEach((wordSimilarities, index) => {
@@ -315,9 +330,17 @@ let getCenterAL = async (req, res) => {
     const flattenedValues = valuesFromCentroids.flat();
 
     const centersByIds = center.filter((item) => flattenedValues.some((centroid) => centroid[0] === item.id));
-
-    console.log("Centers by IDs:");
-    console.log(centersByIds);
+        if(key==''){
+            searchcenter=[]
+        }else{
+            if(centers.keyserch.length!=0){
+                searchcenter=centers.keyserch[0]
+            }
+            else{
+                searchcenter=[]
+            }
+        }
+  
     return res.status(200).json({
         erroCode: 0,
         message: 'OK',
@@ -325,7 +348,7 @@ let getCenterAL = async (req, res) => {
         // dataByCentroids: dataByCentroids,
         center:centersByIds,
         // suggestions: suggestions,
-        // centroids: centroids,
+        searchcenter: searchcenter,
         filteredDataByCentroids: filteredDataByCentroids,
 
     });

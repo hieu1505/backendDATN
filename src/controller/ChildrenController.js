@@ -113,12 +113,16 @@ let UpdateChildren=async (req,res)=>{
             errMessage: "Thieu tham so id"
         })
     }
-    if (!req.file){
-        req.body.personalPicture='0';
-    } else{
-        req.body.personalPicture=req.file.path;
-    }
-    let resData=await ChildrenService.UpdateChildren(req.params,req.body)
+    let id =req.params.id;
+    // console.log(req.file.path)
+    req.body.image = req.file.path;
+    let resData=await ChildrenService.UpdateChildren(req.params.id,req.body)
+    return res.status(200).json({
+        erroCode:0,
+        message: 'OK',
+       
+        children: resData.children,
+    })
 }
 let getallChildren=async (req,res)=>{
     console.log(req.query.key)

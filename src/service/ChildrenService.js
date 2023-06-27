@@ -111,20 +111,22 @@ let createChildren=async (id, data) => {
         }
      })
 }
-let UpdateChildren=(params, data) => {
+let UpdateChildren=(id, data) => {
     return new Promise(async (resolve, reject) => {
         let resData = {};
         try {
-            let chidren =await db.Children.findByPk(params.id)
+            let chidren =await db.Children.findByPk(id)
             if(chidren){
                 await db.Children.update({
                     name:data.name,
-                    personalPicture:data.personalPicture,
+                    personalPicture:data.image,
                     status:data.status,
                     gender:data.gender=== '1' ? true : false,
                     age:data.age,
                     JoinDate:data.JoinDate,
-                })
+                },{where: {
+                    id: id
+                }})
                 resData.errCode = 0;
                 resData.errMessage = chidren
             }

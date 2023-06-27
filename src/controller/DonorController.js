@@ -15,20 +15,41 @@ let createDonor=async (req, res) => {
 }
 let getlistdonorbycenter=async (req, res) => {
     let id = parseInt(req.params.id);
+    if(!req.query.begin){
+        return res.status(400).json({
+            errCode:"2",
+            message: 'thiếu thời gian bắt đầu'
+        })
+    }
+    if(!req.query.end){
+        return res.status(400).json({
+            errCode:"2",
+            message: 'thiếu thời gian kết thúc'
+        })
+    }
     if (id) {
         let pageNumber = req.query.page === undefined ? 0: req.query.page;
         let limit = req.query.limit === undefined ? 10 : req.query.limit;
-        let resData=await donorService.getlistdonorbycenter(id,pageNumber,limit)
+        data = {
+            begin: req.query.begin,
+            end: req.query.end,
+            pageNumber:pageNumber,
+            limit:limit
+        }
+        
+        let resData=await donorService.getlistdonorbycenter(id,data)
         let page ={};
         page.size= resData.size;
         page.totalPages= resData.totalPages;
         page.totalElements = resData.totalElements;
         page.page = resData.page;
+        totalAmount=resData.totalAmount
         return res.status(200).json({
             erroCode:0,
             message: 'OK',
             page: page,
             donor: resData.donor,
+            totalAmount:totalAmount
         })
     }
     else{

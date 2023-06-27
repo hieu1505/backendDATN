@@ -24,7 +24,7 @@ let creatCommet = async (data) => {
 
                             {
                                 model: db.Account,
-                                required: false,
+                                required: true,
                                 as: 'account',
                                 attributes: {
                                     exclude: ['password', 'passwordResetToken', 'Token', 'active']
@@ -64,19 +64,24 @@ let creatCommet = async (data) => {
                                 as: 'profile',
                             }
                         },
-
-
-
                     ]
                 })
-                console.log(center)
-                let message = `${rows[0].account.profile.name} đã bình luận vào bài viết của bạn `;
-                db.Notification.create({
+                console.log(rows)
+                if(center.account_id!=data.idaccount){
+                    let message = `${rows[0].account.profile.name} đã bình luận vào bài viết của bạn `;
+                console.log(message)
+                let a= await db.Notification.create({
                     activity_id: data.idactivity,
                     account_id: center.account_id,
                     message: message,
                     status: true
                 })
+                }
+                
+                console.log('a',center.account_id)
+                console.log('assa',data.idaccount)
+
+                
                 const uniqueRows = [];
                 const accountIdSet = new Set();
 
@@ -92,7 +97,7 @@ let creatCommet = async (data) => {
                     const row = uniqueRows[i];
                     const accountId = row.account.id;
                     
-                        db.Notification.create({
+                        await db.Notification.create({
                             activity_id: data.idactivity,
                             account_id: accountId,
                             message: message2,
@@ -103,6 +108,7 @@ let creatCommet = async (data) => {
                 let resData = {};
                 resData.totalcomment = count,
                     resData.listcomment = rows
+                   
                 resolve(resData)
             }
         } catch (error) {

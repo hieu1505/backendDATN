@@ -6,7 +6,21 @@ let getadropt_detailbyid= (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let resData = {};
-            let Adropt_detail = await db.Adropt_detail.findOne({ where: { id: id }})
+            let Adropt_detail = await db.Adropt_detail.findOne({ where: { id: id },
+                include: 
+                {
+                    model: db.Account,
+                    required: true,
+                    as: 'account',
+                    attributes: {
+                        exclude: ['password', 'passwordResetToken', 'Token', 'active','email','createdAt','updatedAt']
+                    },
+                    include: {
+                        model: db.Profile,
+                        required: true,
+                        as: 'profile',
+                    }
+                },})
             resData.Adropt_detail=Adropt_detail
             resolve(resData)
         } catch (error) {
@@ -19,7 +33,11 @@ let getadropt_detailbyacountid= (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             let resData = {};
-            let Adropt_detail = await db.Adropt_detail.findOne({ where: { account_id: id }})
+            let Adropt_detail = await db.Adropt_detail.findOne({ where: { account_id: id },
+                
+    
+                }
+                )
             resData.Adropt_detail=Adropt_detail
             resolve(resData)
         } catch (error) {

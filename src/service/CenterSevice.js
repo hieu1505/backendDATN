@@ -272,55 +272,24 @@ let getcenterbyacountid = (id) => {
         }
     })
 }
-let getallcenterAL = async () => {
+let getallcenterAL = async (key) => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log('asa')
-            // const centers = await db.Center.findAll({
-            //     attributes: ['name', 'email', 'adress', 'phoneNumber', 'picture', 'account_id', [db.sequelize.fn('SUM', db.sequelize.col('donor.amount')), 'totalAmount']],
-            //     include: [{
-            //         model: db.Donor,
-            //         as: 'donor',
-            //         attributes: [],
-            //     },{
-            //         model: db.Activity,
-            //         as: 'activity',
-            //         attributes: [
-            //             'id',
-            //             [Sequelize.literal('(SELECT COUNT(*) FROM Likes WHERE Likes.activity_id = activity.id)'), 'totalLike'],
-            //             [Sequelize.literal('(SELECT COUNT(*) FROM Comments WHERE Comments.activity_id = activity.id)'), 'totalComment']
-            //           ],
-            //           include: [
-            //             {
-            //               model: db.Like,
-            //               required: false,
-            //               attributes: [],
-            //               as: 'like',
-            //             },
-            //             {
-            //                 model: db.Comment,
-            //                 required: false,
-            //                 as: 'comment',
-            //                 attributes: []
-            //               },
-            //         ]
-            //     },
-            
-            // ],
-            //     group: ['Center.id', 'Center.name', 'Center.email', 'Center.adress', 'Center.phoneNumber', 'Center.picture', 'Center.account_id','activity.id'],
+            const { count, rows } = await db.Center.findAndCountAll({
                
-            // });
+                raw: true,
+                nest: true,
+                where: {
+                    [Op.or]: [
+                        { name: db.sequelize.where(db.sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE', '%' + key + '%') },
+                    ]
+                }
+            })
+            
            const centers = await db.Center.findAll({
-                    attributes: ['id','name', 'email', 'adress', 'phoneNumber', 'picture', 'account_id',[db.sequelize.fn('SUM', db.sequelize.col('donor.amount')), 'totalAmount'],[Sequelize.literal('(SELECT COUNT(*) FROM Children WHERE Children.center_id = Center.id)'), 'totalChildren']],
-                    include: [{
-                        model: db.Donor,
-                        as: 'donor',
-                        attributes: [],
-                    },{
-                        model: db.Children,
-                        as: 'children',
-                        attributes: [],
-                    }],
+                    attributes: ['id','name', 'email', 'adress', 'phoneNumber', 'picture', 'account_id',[Sequelize.literal('(SELECT SUM(amount) FROM Donors WHERE center_id = Center.id)'), 'totalAmount'],[Sequelize.literal('(SELECT COUNT(*) FROM Children WHERE Children.center_id = Center.id)'), 'totalChildren']],
+                    
                     group: ['Center.id'],
                     raw: true
                 })
@@ -334,21 +303,7 @@ let getallcenterAL = async () => {
                         [Sequelize.literal('(SELECT COUNT(*) FROM Comments WHERE Comments.activity_id = Activity.id)'), 'totalComment']
                       ],
                    
-                    include: [
-                        {
-                            model: db.Like,
-                            required: false,
-                            as: 'like',
-                            attributes: []
-                        },
-                       
-                        {
-                            model: db.Comment,
-                            required: false,
-                            as: 'comment',
-                            attributes: []
-                        },
-                    ],
+                   
                     group: ['Activity.id'],
                     where: {
                         center_id: {
@@ -360,8 +315,10 @@ let getallcenterAL = async () => {
                
             )
             let resData = {};
+          
             resData.totalAmountchildre=centers;
             resData.totalCommentlike=a
+            resData.keyserch=rows
             resolve(resData)
         } catch (error) {
             reject(error)
