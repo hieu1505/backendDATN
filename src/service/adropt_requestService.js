@@ -1,6 +1,7 @@
 const { where } = require('sequelize');
 
 const { Sequelize, Op, DataTypes } = require('sequelize');
+const emailService = require('./emailService')
 
 const db = require('../models');
 let getadropt_requesbychildrentid = (id) => {
@@ -47,7 +48,50 @@ let Updateadropt_request = (params, data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let resData = {};
-            let adropt_request = await db.Adropt_request.findByPk(params.id)
+            let adropt_request = await db.Adropt_request.findOne({include: [
+
+                {
+                    model: db.Children,
+                    required: false,
+                    as: 'children',
+                    
+                },
+                {
+                    model: db.Adropt_detail,
+                    required: false,
+                    as: 'adropt_detail',
+                    include: [
+                        {
+                            model: db.Account,
+                            required: false,
+                            as: 'account',
+                        }
+                    ]
+                    
+                },
+                
+            ],
+            where: {
+                id:params.id
+              },
+              raw: true})
+            console.log(adropt_request['children.name'])
+            // 
+            if(data.request=='Unaccept'){
+                emailService.sendNotification({
+                    receiverEmail: adropt_request['adropt_detail.account.email'],
+                    patientName: adropt_request['adropt_detail.account.email'],
+                    message:`bạn không phù hợp để nhận nuôi trẻ có tên ${adropt_request['children.name']}`
+                });
+            }
+            if(data.request=='Accept'){
+                emailService.sendNotification({
+                    receiverEmail:adropt_request['adropt_detail.account.email'],
+                    patientName: adropt_request['adropt_detail.account.email'],
+                    message:`bạn  phù hợp để nhận nuôi trẻ có tên ${adropt_request['children.name']}, xin hãy phản hồi lại với chúng tôi`
+                });
+            }
+           
             if (adropt_request) {
                 await db.Adropt_request.update({
                   

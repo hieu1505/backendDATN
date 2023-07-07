@@ -6,15 +6,14 @@ let sendSimpleEmail = async(dataSend) => {
         secure: false, 
         auth: {
             user: 'trungtamxahoi987@gmail.com', 
-            // pass: 'trungtamxahoi', 
-            pass: 'itnzbrqvveknvbcc', 
-        },
-        
+            pass: 'itnzbrqvveknvbcc', }
+            
     });
 
-    
+
+    console.log('dsada',dataSend.redirectLink)
     let info = await transporter.sendMail({
-        from: 'trungtamxahoi987@gmail.com', 
+        from: '"trungtamxahoi 👻" <trungtamxahoi987@gmail.com>', 
         to: dataSend.receiverEmail, 
         subject: "Xac thuc tai khoan ✔", 
         html: `
@@ -55,15 +54,14 @@ let sendNotification = async(dataSend) => {
         secure: false, 
         auth: {
             user: 'trungtamxahoi987@gmail.com', 
-            pass: 'itnzbrqvveknvbcc', 
-        },
+            pass: 'itnzbrqvveknvbcc', }
     });
     let info = await transporter.sendMail({
-        from: '"BookMyDoctor 👻" <bookmydoctor22@gmail.com>', 
+        from: '"trungtamxahoi 👻" <trungtamxahoi987@gmail.com>', 
         to: dataSend.receiverEmail, 
-        subject: "Thông báo lịch khám", 
+        subject: "Thông báo nhận nuôi trẻ", 
         html: `
-        <p>${dataSend.message}</p>
+        <p>${dataSend.message} xin cảm ơn</p>
         `, 
     });
 }

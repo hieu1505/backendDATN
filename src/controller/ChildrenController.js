@@ -114,8 +114,9 @@ let UpdateChildren=async (req,res)=>{
         })
     }
     let id =req.params.id;
-    // console.log(req.file.path)
-    req.body.image = req.file.path;
+    if (req.file) {
+        req.body.image = req.file.path;
+    }
     let resData=await ChildrenService.UpdateChildren(req.params.id,req.body)
     return res.status(200).json({
         erroCode:0,

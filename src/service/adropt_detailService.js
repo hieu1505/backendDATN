@@ -49,10 +49,11 @@ let getadropt_detailbyacountid= (id) => {
 let creatadropt_detail=async ( data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let AccoutData = await db.Adropt_detail.findOne({               
-                account_id: data.account_id 
+            let AccoutData = await db.Adropt_detail.findOne({ where:{account_id: data.account_id }              
+                
             })
             console.log('hhhh')
+            console.log(AccoutData)
             if(!AccoutData){
                 let adropt_detail=await db.Adropt_detail.create({
                     income:data.income,

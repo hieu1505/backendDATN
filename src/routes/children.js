@@ -9,6 +9,6 @@ router.delete('/:id',authJwt.authenToken,authJwt.isAdminOrUser,ChildrenControlle
 router.get('/center/:id',authJwt.authenToken,ChildrenController.getallChildrenbycenter);
 router.get('/:id',authJwt.authenToken, ChildrenController.getChildrenById);
 router.post('/create/:id',authJwt.authenToken,fileUploader.single('image'),ChildrenController.create);
-router.put('/:id',ChildrenController.UpdateChildren)
+router.put('/:id',authJwt.authenToken,fileUploader.single('image'),ChildrenController.UpdateChildren)
  
 module.exports = router

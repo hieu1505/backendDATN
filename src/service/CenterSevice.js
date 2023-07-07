@@ -252,6 +252,26 @@ let getCenterById = (id) => {
                     center_id: id
                 }
             })
+            const a=  await db.Activity.findOne(
+                {
+                    attributes: [
+                        'id',
+                        'center_id',
+                        [Sequelize.literal('(SELECT COUNT(*) FROM Likes WHERE Likes.activity_id = Activity.id)'), 'totalLike'],
+                        [Sequelize.literal('(SELECT COUNT(*) FROM Comments WHERE Comments.activity_id = Activity.id)'), 'totalComment']
+                      ],
+                   
+                   
+                    group: ['Activity.id'],
+                    where: {
+                        center_id: id
+                    },
+                    raw: true
+                },
+               
+            )
+            console.log(a)
+            resData.totalCommentlike=a
             resData.countchildent = countchildent
             resData.center = center
             resolve(resData)

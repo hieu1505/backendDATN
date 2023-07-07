@@ -19,7 +19,7 @@ let hashUserPassword = (password) => {
     })
 }
 let buildUrlEmail= (token) =>{
-    let result = `${process.env.HOST_BASE_FRONTEND}/auth/verify-account?token=${token}` 
+    let result = `https://trungtamquanlytremocoi.onrender.com/auth/verify-account?token=${token}` 
     return result;
 }
 
@@ -36,19 +36,16 @@ let createNewAccount = async (data, roleName) => {
                     })
                 }
                 else {
-                    
-
-
-
+                    id = uuidv4();
                     ///xacthuc email
-                    // if (data.status == '0') {
-                    //     id = uuidv4();
-                    //     emailService.sendSimpleEmail({
-                    //         receiverEmail: data.email,
-                    //         patientName: data.name,
-                    //         redirectLink:buildUrlEmail(id)
-                    //     });
-                    // }
+                    if (data.active == '0') {
+                        
+                        emailService.sendSimpleEmail({
+                            receiverEmail: data.email,
+                            patientName: data.email,
+                            redirectLink:buildUrlEmail(id)
+                        });
+                    }
 
                     let hashPasswordFromBcrypt = await hashUserPassword(data.password);
                     let [role, created] = await db.Role.findOrCreate({
@@ -68,7 +65,7 @@ let createNewAccount = async (data, roleName) => {
                         active: data.active,
                         role_id: role.id,
                         profile_id: profile.id,
-                        Token:''
+                        Token:id
 
                     })
                     delete account.password;
@@ -349,7 +346,7 @@ let verifyUser =(data)=>{
             } else{
                 let account=await db.Account.findOne({
                     where:{
-                        token: data.token,
+                        Token: data.token,
                         active: 0
                     },
                     raw: false
@@ -357,7 +354,7 @@ let verifyUser =(data)=>{
 
                 if(account){
                     account.active = true
-                    account.token = ''
+                    account.Token = ''
                     await account.save()
 
                     resolve({

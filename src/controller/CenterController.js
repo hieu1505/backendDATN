@@ -115,7 +115,8 @@ let getCenterById = async (req, res) => {
             return res.status(200).json({
                 errCode: 0,
                 message: resData.center,
-                countchildent: resData.countchildent
+                countchildent: resData.countchildent,
+                totalCommentlike:resData.totalCommentlike
             })
         }
         else {
@@ -240,10 +241,8 @@ console.log('aa',b)
     for (let k = 1; k <= maxK; k++) {
         // Run K-means clustering
         const { clusters, centroids } = kmeans(data, k);
-
         // Calculate inertia (sum of squared distances)
         const inertiaValue = calculateInertia(data, clusters, centroids);
-
         // Store inertia
         inertias.push(inertiaValue);
     }
@@ -259,6 +258,7 @@ console.log('aa',b)
             optimalK = i + 1;
         }
     }
+    
     const { clusters, centroids } = kmeans(data, optimalK);
     const suggestedWords = [b];
 
@@ -271,7 +271,6 @@ console.log('aa',b)
         });
     });
     console.log('similarities:', similarities)
-
     // Sắp xếp và chọn các từ gợi ý dựa trên độ tương đồng
     const numSuggestions = 1; // Số lượng từ gợi ý
     const suggestions = [];
@@ -290,7 +289,6 @@ console.log('aa',b)
 
         suggestions.push({ word: suggestedWords[index], suggestions: topSuggestions });
     });
-
     // Sắp xếp suggestions theo giá trị của centroids
     suggestions.sort((a, b) => {
         const centroidA = a.suggestions[0].centroid;

@@ -66,6 +66,14 @@ let getAllChildrenbycenter= async(id ,key,page,limit)=>{
                 
 
             })
+            let date=new Date();
+            date.setDate(date.getDate()-3)
+            db.Adropt_request.destroy({
+              where:{
+                  request:'unaccept',
+                  updatedAt:{[Op.lt]:date}
+              }
+            })
             console.log(rows)
             let resData = {};
             resData.children = rows;
@@ -113,6 +121,7 @@ let createChildren=async (id, data) => {
 }
 let UpdateChildren=(id, data) => {
     return new Promise(async (resolve, reject) => {
+        console.log(data)
         let resData = {};
         try {
             let chidren =await db.Children.findByPk(id)
@@ -166,6 +175,14 @@ let getAllChildren=async(key,page,limit)=>{
                 ]
               });
               
+              let date=new Date();
+              date.setDate(date.getDate()-3)
+              db.Adropt_request.destroy({
+                where:{
+                    request:'unaccept',
+                    updatedAt:{[Op.lt]:date}
+                }
+              })
             // console.log(rows)
             let resData = {};
             resData.children = rows;

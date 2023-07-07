@@ -70,7 +70,7 @@ let signin = async (req, res) => {
         req.body.image = req.file.path;
     }
     console.log(req.body.image)
-    req.body.active = '1';///xacthucemail active=0
+    req.body.active = '0';///xacthucemail active=0
     let message = await AccountService.createNewAccount(req.body, 'user');
     console.log(message)
     if (message.errCode == 0) {
